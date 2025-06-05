@@ -37,17 +37,12 @@ public class AuthController {
         this.jwtUtils = jwtUtils;
     }
 
-    @PostMapping("/signup") // Maps HTTP POST requests to /api/auth/signup to this method
+    @PostMapping("/signup")
     public ResponseEntity<?> registerUser(@RequestBody Utilizator signUpRequest) {
-        // @RequestBody maps the HTTP request body to the Utilizator object
         try {
             Utilizator registeredUser = authService.registerUser(signUpRequest);
-            // You might want to return a DTO (Data Transfer Object) here
-            // instead of the full Utilizator entity to avoid exposing sensitive data like password hash.
-            // For now, we'll return a success message.
             return ResponseEntity.ok("User registered successfully! ID: " + registeredUser.getId());
         } catch (Exception e) {
-            // Basic error handling. In a real app, you'd have more specific error responses.
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
         }
     }

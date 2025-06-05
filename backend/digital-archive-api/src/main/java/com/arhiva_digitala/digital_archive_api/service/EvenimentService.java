@@ -1,10 +1,14 @@
 package com.arhiva_digitala.digital_archive_api.service;
 
 import com.arhiva_digitala.digital_archive_api.model.Eveniment;
+import com.arhiva_digitala.digital_archive_api.model.Participare;
+import com.arhiva_digitala.digital_archive_api.model.ParticipariId;
 import com.arhiva_digitala.digital_archive_api.model.Utilizator;
 import com.arhiva_digitala.digital_archive_api.repository.EvenimentRepository;
+import com.arhiva_digitala.digital_archive_api.repository.ParticipareRepository;
 import com.arhiva_digitala.digital_archive_api.repository.UtilizatorRepository;
 // Ar putea fi necesare excepții personalizate, de ex. ResourceNotFoundException
+import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UsernameNotFoundException; // Sau o excepție personalizată
 import org.springframework.stereotype.Service;
@@ -13,31 +17,53 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 
 @Service
+@AllArgsConstructor
 public class EvenimentService {
 
     private final EvenimentRepository evenimentRepository;
     private final UtilizatorRepository utilizatorRepository;
-
-    @Autowired
-    public EvenimentService(EvenimentRepository evenimentRepository, UtilizatorRepository utilizatorRepository) {
-        this.evenimentRepository = evenimentRepository;
-        this.utilizatorRepository = utilizatorRepository;
-    }
+    private final ParticipareRepository participareRepository;
 
     @Transactional
-    public Eveniment createEveniment(Eveniment eveniment, String numeUtilizator) {
-        Utilizator utilizator = utilizatorRepository.findByNumeUtilizator(numeUtilizator)
-                .orElseThrow(() -> new UsernameNotFoundException("Utilizatorul nu a fost găsit: " + numeUtilizator));
-        eveniment.setUtilizator(utilizator);
-        return evenimentRepository.save(eveniment);
+    public Eveniment createEveniment(Eveniment eveniment, String creatorUsername, List<String> participanti) {
+        Utilizator creator = utilizatorRepository.findByNumeUtilizator(creatorUsername)
+                .orElseThrow(() -> new UsernameNotFoundException("Utilizatorul nu a fost găsit: " + creatorUsername));
+
+        eveniment.setUtilizator(creator);
+        Eveniment saved = evenimentRepository.save(eveniment);
+
+        // Add creator as participant
+        Participare self = new Participare(new ParticipariId(saved.getId(), creator.getId()), saved, creator);
+        participareRepository.save(self);
+
+        // Add other participants
+        if (participanti != null) {
+            for (String username : participanti) {
+                if (!username.equals(creatorUsername)) {
+                    utilizatorRepository.findByNumeUtilizator(username).ifPresent(user -> {
+                        Participare p = new Participare(new ParticipariId(saved.getId(), user.getId()), saved, user);
+                        participareRepository.save(p);
+                    });
+                }
+            }
+        }
+
+        return saved;
     }
+
 
     @Transactional(readOnly = true)
     public List<Eveniment> getEvenimenteByUtilizator(String numeUtilizator) {
         Utilizator utilizator = utilizatorRepository.findByNumeUtilizator(numeUtilizator)
                 .orElseThrow(() -> new UsernameNotFoundException("Utilizatorul nu a fost găsit: " + numeUtilizator));
-        return evenimentRepository.findByUtilizatorOrderByDataInceputDesc(utilizator);
+
+        List<Participare> participari = participareRepository.findByUtilizator(utilizator);
+        return participari.stream()
+                .map(Participare::getEveniment)
+                .sorted((a, b) -> b.getDataInceput().compareTo(a.getDataInceput()))
+                .toList();
     }
+
 
     @Transactional(readOnly = true)
     public Eveniment getEvenimentByIdAndUtilizator(Long id, String numeUtilizator) {
@@ -64,8 +90,6 @@ public class EvenimentService {
         evenimentExistent.setLocatie(evenimentDetails.getLocatie());
         evenimentExistent.setCategorie(evenimentDetails.getCategorie());
         evenimentExistent.setVizibilitate(evenimentDetails.getVizibilitate());
-        // câmpurile dataCreare și utilizator nu ar trebui actualizate aici
-        // dataUltimaModificare este gestionată de @PreUpdate
 
         return evenimentRepository.save(evenimentExistent);
     }

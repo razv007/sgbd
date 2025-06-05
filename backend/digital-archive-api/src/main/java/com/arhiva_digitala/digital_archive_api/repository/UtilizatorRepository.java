@@ -22,4 +22,7 @@ public interface UtilizatorRepository extends JpaRepository<Utilizator, Long> {
     // Suprascriem interogarea pentru a folosi sintaxa Oracle ROWNUM
     @Query(value = "SELECT CASE WHEN COUNT(u.utilizator_id) > 0 THEN 1 ELSE 0 END FROM Utilizatori u WHERE u.email = :email AND ROWNUM = 1", nativeQuery = true)
     Integer checkExistsByEmail(@Param("email") String email);
+
+    @Query("SELECT CASE WHEN COUNT(u) > 0 THEN true ELSE false END FROM Utilizator u WHERE u.numeUtilizator = :username")
+    boolean existsByNumeUtilizator(String username);
 }

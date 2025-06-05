@@ -22,5 +22,5 @@ public class Participare {
     @ManyToOne(fetch = FetchType.LAZY)
     @MapsId("utilizatorId")
     @JoinColumn(name = "UTILIZATOR_ID", nullable = false)
-    private Utilizator utilizator;
+        private Utilizator utilizator;
 }
