@@ -4,14 +4,15 @@ import { useNavigate } from 'react-router-dom';
 import styles from './TimelinePage.module.css'; // Vom crea acest fișier
 
 interface Eveniment {
-    id: number;
+    id: number | string; // Permite string pentru ID-urile markerelor speciale
     titlu: string;
     descriere?: string;
-    dataInceput: string; // Acum va fi un string ISO LocalDateTime
-    dataSfarsit?: string; // Acum va fi un string ISO LocalDateTime
+    dataInceput: string; // String ISO (YYYY-MM-DD sau YYYY-MM-DDTHH:mm:ss)
+    dataSfarsit?: string; // String ISO
     locatie?: string;
     categorie?: string;
-    vizibilitate: string; // Adăugat din backend
+    vizibilitate?: string;
+    type?: 'birth' | 'today' | 'event'; // Tipul item-ului pentru stilizare și logică diferită
 }
 
 // Interfață pentru starea formularului
@@ -29,46 +30,27 @@ const TimelinePage: React.FC = () => {
     const [evenimente, setEvenimente] = useState<Eveniment[]>([]);
     const [loading, setLoading] = useState<boolean>(true);
     const [error, setError] = useState<string | null>(null);
-    const [showForm, setShowForm] = useState<boolean>(false); // Stare pentru vizibilitatea formularului
-    const [formData, setFormData] = useState<EvenimentFormData>({ // Stare pentru datele formularului
+    const [showForm, setShowForm] = useState<boolean>(false);
+    const [formData, setFormData] = useState<EvenimentFormData>({
         titlu: '',
         descriere: '',
-        dataInceput: '',
+        dataInceput: new Date().toISOString().slice(0, 16), // Default to current date and time
         dataSfarsit: '',
         locatie: '',
         categorie: '',
         vizibilitate: 'PRIVAT',
     });
-    const [formError, setFormError] = useState<string | null>(null); // Stare pentru erorile formularului
-    const [userBirthDate, setUserBirthDate] = useState<Date | null>(null);
-    const [timelineRange, setTimelineRange] = useState<{ start: Date, end: Date } | null>(null);
-    const [positionedEvents, setPositionedEvents] = useState<Array<Eveniment & { style: React.CSSProperties }>>([]);
+    const [formError, setFormError] = useState<string | null>(null);
+    const [birthDate, setBirthDate] = useState<string | null>(null); // Storing as YYYY-MM-DD string
+    const [currentDateISO, setCurrentDateISO] = useState<string>(new Date().toISOString());
+
     const navigate = useNavigate();
 
-    // Helper function to fetch events
     const fetchEvenimente = async () => {
         const token = localStorage.getItem('userToken');
-        console.log('TimelinePage: fetchEvenimente trying to use token:', token); // ADDED
-
         if (!token) {
-            console.log('TimelinePage: No token found in localStorage, navigating to login.'); // ADDED
             navigate('/login');
             return;
-        }
-
-        // Preluare și setare data nașterii utilizatorului
-        const birthDateString = localStorage.getItem('userDataNastere');
-        if (birthDateString) {
-            const parsedDate = new Date(birthDateString);
-            // Verificăm dacă data este validă, deoarece new Date(null) sau new Date('') pot da rezultate neașteptate
-            if (!isNaN(parsedDate.getTime())) {
-                setUserBirthDate(parsedDate);
-                console.log('User birth date set in state:', parsedDate);
-            } else {
-                console.warn('Failed to parse user birth date from localStorage:', birthDateString);
-            }
-        } else {
-            console.warn('User birth date not found in localStorage.');
         }
         try {
             setLoading(true);
@@ -80,140 +62,38 @@ const TimelinePage: React.FC = () => {
                     'Content-Type': 'application/json',
                 },
             });
-
-            console.log('TimelinePage: Response status from /api/evenimente:', response.status); // ADDED
-
             if (!response.ok) {
-                let errorDataText = ''; // For storing text response if JSON fails
+                let errorDataText = `Eroare ${response.status}`;
                 try {
-                    // Try to parse as JSON first, as original code did
-                    const errorDataJson = await response.json(); 
-                    console.error('TimelinePage: Error response data (JSON) from /api/evenimente:', errorDataJson); // ADDED
-                    if (errorDataJson && errorDataJson.message) {
-                        errorDataText = errorDataJson.message;
-                    } else if (errorDataJson && errorDataJson.error) {
-                        errorDataText = errorDataJson.error;
-                    }
-                } catch (jsonError) {
-                    // If JSON parsing fails, try to get as text
-                    try {
-                        errorDataText = await response.text();
-                        console.error('TimelinePage: Error response data (text) from /api/evenimente:', errorDataText); // ADDED
-                    } catch (textError) {
-                        console.error('TimelinePage: Could not read error response as JSON or text.');
-                    }
-                }
-
+                    const errorDataJson = await response.json();
+                    errorDataText = errorDataJson.message || errorDataJson.error || errorDataText;
+                } catch (e) { /* Ignore if not JSON */ }
                 if (response.status === 401 || response.status === 403) {
                     localStorage.removeItem('userToken');
                     navigate('/login');
-                    throw new Error('Sesiune expirată sau neautorizată. Vă rugăm să vă reautentificați.');
+                    throw new Error('Sesiune expirată sau neautorizată.');
                 }
-                
-                const errorMessage = errorDataText || `Eroare la preluarea evenimentelor: ${response.statusText}`;
-                throw new Error(errorMessage);
+                throw new Error(errorDataText);
             }
             const data: Eveniment[] = await response.json();
-            setEvenimente(data);
+            setEvenimente(data.map(ev => ({ ...ev, type: 'event' }))); // Mark real events
         } catch (err) {
-            console.error('Error fetching events:',err);
-            setError(err instanceof Error ? err.message : 'A apărut o eroare necunoscută la preluarea evenimentelor.');
+            setError(err instanceof Error ? err.message : 'Eroare la preluarea evenimentelor.');
         } finally {
             setLoading(false);
         }
     };
 
     useEffect(() => {
-        // Preluare și setare data nașterii utilizatorului
-        const birthDateString = localStorage.getItem('userDataNastere');
-        if (birthDateString) {
-            const parsedDate = new Date(birthDateString); // Format YYYY-MM-DD
-            // new Date('YYYY-MM-DD') creează data la miezul nopții UTC. Pentru a evita probleme de timezone
-            // care ar putea schimba ziua, putem adăuga ora explicit sau trata string-ul cu mai multă grijă.
-            // Pentru moment, presupunem că new Date() gestionează corect string-ul YYYY-MM-DD ca dată locală.
-            if (!isNaN(parsedDate.getTime())) {
-                setUserBirthDate(parsedDate);
-                console.log('TimelinePage: User birth date set in state:', parsedDate);
-            } else {
-                console.warn('TimelinePage: Failed to parse user birth date from localStorage:', birthDateString);
-            }
-        } else {
-            console.warn('TimelinePage: User birth date not found in localStorage.');
+        const storedBirthDate = localStorage.getItem('userDataNastere'); // Assuming 'userDataNastere' is the correct key
+        if (storedBirthDate) {
+            // Extract only the date part if it includes time
+            setBirthDate(storedBirthDate.split('T')[0]); 
         }
-
+        setCurrentDateISO(new Date().toISOString());
         fetchEvenimente();
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [navigate]); // Adăugăm navigate ca dependență dacă este folosit în fetchEvenimente pentru redirectch (though typically stable)
-
-    useEffect(() => {
-        if (userBirthDate && evenimente.length >= 0) {
-            let minEventDate = userBirthDate;
-            let maxEventDate = userBirthDate;
-
-            if (evenimente.length > 0) {
-                const eventDates = evenimente.map(e => new Date(e.dataInceput).getTime());
-                minEventDate = new Date(Math.min(userBirthDate.getTime(), ...eventDates));
-                maxEventDate = new Date(Math.max(userBirthDate.getTime(), ...eventDates));
-            }
-            
-            let timelineActualEnd = maxEventDate;
-
-            // Ensure timeline end is at least today or a bit after the last event
-            const today = new Date();
-            if (timelineActualEnd.getTime() < today.getTime()) {
-                timelineActualEnd = today;
-            }
-
-            // Add padding to the end date
-            // Duration from user's birth to the effective end of events or today
-            // minEventDate este data de început efectivă a evenimentelor sau data nașterii
-            const effectiveDurationMs = timelineActualEnd.getTime() - minEventDate.getTime();
-            let paddingMs = effectiveDurationMs * 0.1; // 10% padding
-            if (paddingMs === 0 && evenimente.length === 0) { // If only birthdate and today are the same, or no events
-                paddingMs = 86400000 * 30; // Default 30 days padding if no significant duration
-            }
-            if (paddingMs < 86400000 * 7) { // Minimum 7 days padding if calculated is too small
-                paddingMs = 86400000 * 7;
-            }
-
-            const finalTimelineEndDate = new Date(timelineActualEnd.getTime() + paddingMs);
-            const finalTimelineStartDate = userBirthDate; // Always start timeline from birth date visually
-
-            setTimelineRange({ start: finalTimelineStartDate, end: finalTimelineEndDate });
-
-            const totalDurationMs = finalTimelineEndDate.getTime() - finalTimelineStartDate.getTime();
-
-            if (totalDurationMs <= 0) {
-                setPositionedEvents(evenimente.map(event => ({ ...event, style: { position: 'absolute', left: '0%', top: 'calc(50% - 9px)'} }))); // Default position if duration is zero/negative
-                return;
-            }
-
-            const sortedEvents = [...evenimente].sort((a, b) => new Date(a.dataInceput).getTime() - new Date(b.dataInceput).getTime());
-            
-            const newPositionedEvents = sortedEvents.map(event => {
-                const eventDate = new Date(event.dataInceput);
-                const eventOffsetMs = eventDate.getTime() - finalTimelineStartDate.getTime();
-                let positionPercent = (eventOffsetMs / totalDurationMs) * 100;
-                positionPercent = Math.max(0, Math.min(positionPercent, 100)); // Clamp between 0 and 100
-
-                const style: React.CSSProperties = {
-                    position: 'absolute',
-                    left: `${positionPercent}%`,
-                    top: 'calc(50% - 9px)', // Marker center (18px/2 = 9px) aligns with timeline axis (at 50%)
-                    transform: 'translateX(-50%)', // Center the event itself on its 'left' percentage
-                };
-                return { ...event, style };
-            });
-            setPositionedEvents(newPositionedEvents);
-
-        } else if (userBirthDate) {
-            // No events, but birth date exists. Timeline from birth date to today + padding.
-            const today = new Date();
-            const endDateWithPadding = new Date(Math.max(today.getTime(), userBirthDate.getTime()) + (86400000 * 30)); // 30 days padding
-            setTimelineRange({ start: userBirthDate, end: endDateWithPadding });
-            setPositionedEvents([]); // No events to position
-        }
-    }, [userBirthDate, evenimente]);
+    }, [navigate]);
 
     const handleInputChange = (e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
         const { name, value } = e.target;
@@ -224,100 +104,153 @@ const TimelinePage: React.FC = () => {
         e.preventDefault();
         setFormError(null);
         const token = localStorage.getItem('userToken');
-        if (!token) {
-            navigate('/login');
-            return;
-        }
-
+        if (!token) { navigate('/login'); return; }
         if (!formData.titlu || !formData.dataInceput) {
             setFormError("Titlul și data de început sunt obligatorii.");
             return;
         }
-        
         const payload = {
             ...formData,
-            dataSfarsit: formData.dataSfarsit || null, // Ensure null if empty
+            dataSfarsit: formData.dataSfarsit || undefined, // Send undefined if empty, backend should handle null
         };
-
         try {
             const response = await fetch('http://localhost:8081/api/evenimente', {
                 method: 'POST',
-                headers: {
-                    'Authorization': `Bearer ${token}`,
-                    'Content-Type': 'application/json',
-                },
+                headers: { 'Authorization': `Bearer ${token}`, 'Content-Type': 'application/json' },
                 body: JSON.stringify(payload),
             });
-
             if (!response.ok) {
-                let errorMessage = `Eroare la crearea evenimentului: ${response.statusText}`;
+                let errorMessage = `Eroare ${response.status}`;
                 try {
                     const errorData = await response.json();
-                    if (errorData && errorData.errors && Array.isArray(errorData.errors)) {
-                        errorMessage = errorData.errors.map((err: any) => err.defaultMessage || 'Eroare de validare').join(', ');
-                    } else if (errorData && errorData.message) {
-                        errorMessage = errorData.message;
-                    } else if (errorData && errorData.error) {
-                        errorMessage = errorData.error;
-                    }
-                } catch (e) {
-                    // Stick with statusText
-                }
+                    errorMessage = errorData.message || errorData.error || (Array.isArray(errorData.errors) ? errorData.errors.map((err: any) => err.defaultMessage).join(', ') : errorMessage);
+                } catch (e) { /* Ignore */ }
                 throw new Error(errorMessage);
             }
-
-            setFormData({ titlu: '', descriere: '', dataInceput: '', dataSfarsit: '', locatie: '', categorie: '', vizibilitate: 'PRIVAT' });
+            setFormData({ titlu: '', descriere: '', dataInceput: new Date().toISOString().slice(0, 16), dataSfarsit: '', locatie: '', categorie: '', vizibilitate: 'PRIVAT' });
             setShowForm(false);
-            await fetchEvenimente(); // Re-fetch events to show the new one
-
+            await fetchEvenimente();
         } catch (err) {
-            console.error('Error creating event:', err);
-            setFormError(err instanceof Error ? err.message : 'A apărut o eroare la crearea evenimentului.');
+            setFormError(err instanceof Error ? err.message : 'Eroare la crearea evenimentului.');
         }
     };
 
-    const formatDateTime = (dateTimeString: string) => {
-        if (!dateTimeString) return '';
-        try {
-            return new Date(dateTimeString).toLocaleString('ro-RO', {
-                year: 'numeric', month: '2-digit', day: '2-digit',
-                hour: '2-digit', minute: '2-digit'
-            });
-        } catch (e) {
-            console.error('Error formatting date:', dateTimeString, e);
-            return 'Dată invalidă';
+    const formatDateTime = (dateString: string, type?: Eveniment['type']): string => {
+        if (!dateString) return 'Data invalidă';
+        const date = new Date(dateString);
+        if (isNaN(date.getTime())) return 'Data invalidă';
+
+        if (type === 'birth' || type === 'today') {
+            return date.toLocaleDateString('ro-RO', { year: 'numeric', month: 'long', day: 'numeric' });
         }
+        // Default for 'event' or unspecified type
+        return date.toLocaleString('ro-RO', { year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit' });
     };
 
-    // Conditional rendering for loading and error states
+    const getEventStyle = (_item: Eveniment): React.CSSProperties => {
+        // For a simple list display, no dynamic styles are needed for positioning.
+        // Specific item types (like 'birth' or 'today') might have distinct visual treatments
+        // handled by CSS classes rather than dynamic style objects here.
+        // This function can be extended if other dynamic styles are needed in the future.
+        return {};
+    };
+
+    const allDisplayableItems: Eveniment[] = [...evenimente];
+
+    if (birthDate) {
+        allDisplayableItems.push({
+            id: 'birth-marker',
+            titlu: 'Data Nașterii',
+            descriere: 'Aici începe povestea ta!', // Custom description
+            dataInceput: birthDate, // birthDate is YYYY-MM-DD, ensure it's treated as start of day if needed
+            dataSfarsit: '',
+            locatie: '',
+            categorie: '',
+            vizibilitate: 'PUBLIC', // Or as appropriate
+            type: 'birth',
+        });
+    }
+
+    allDisplayableItems.push({
+        id: 'today-marker',
+        titlu: 'Astăzi',
+        descriere: 'Ziua curentă.', // Custom description
+        dataInceput: currentDateISO,
+        dataSfarsit: '',
+        locatie: '',
+        categorie: '',
+        vizibilitate: 'PUBLIC', // Or as appropriate
+        type: 'today',
+    });
+
+    const sortedTimelineItems = allDisplayableItems
+        .sort((a, b) => new Date(a.dataInceput).getTime() - new Date(b.dataInceput).getTime())
+        .map((item) => {
+            let sideClass = '';
+            let onAxisClass = '';
+            let markerSpecificClass = '';
+
+            if (item.type === 'birth' || item.type === 'today') {
+                onAxisClass = styles.eventOnAxis;
+                // For on-axis events, we don't use eventLeft or eventRight for main positioning
+            } else {
+                // Determine if the event should be on the left or right
+                // Using index of the sorted array for alternation for regular events
+                // We need to be careful with 'index' if birth/today are not counted for alternation
+                // Let's filter non-axis events to get a true alternating index
+                const regularEvents = allDisplayableItems.filter(e => e.type !== 'birth' && e.type !== 'today');
+                const regularEventIndex = regularEvents.findIndex(e => e.id === item.id);
+                sideClass = regularEventIndex % 2 === 0 ? styles.eventLeft : styles.eventRight;
+            }
+
+            if (item.type === 'birth') markerSpecificClass = styles.birthMarker;
+            if (item.type === 'today') markerSpecificClass = styles.todayMarker;
+
+            let contentSpecificClass = '';
+            if (item.type === 'birth') contentSpecificClass = styles.birthEventContent;
+            if (item.type === 'today') contentSpecificClass = styles.todayEventContent;
+
+            return (
+                <div key={item.id} className={`${styles.verticalTimelineEvent} ${sideClass} ${onAxisClass}`} style={getEventStyle(item)}>
+                    <div className={`${styles.eventMarker} ${markerSpecificClass}`}></div>
+                    <div className={styles.eventDateOnAxis}>{formatDateTime(item.dataInceput, item.type)}</div>
+                    {(item.type !== 'birth' && item.type !== 'today') && (
+                        <div className={`${styles.verticalTimelineEventContent} ${contentSpecificClass}`}>
+                            <strong>{item.titlu}</strong>
+                            <p>{item.descriere || (item.type === 'event' ? 'Nicio descriere adăugată.' : '')}</p>
+                            {item.type === 'event' && (
+                                <>
+                                    <p className={styles.eventDate}><strong>Început:</strong> {formatDateTime(item.dataInceput, item.type)}</p>
+                                    {item.dataSfarsit && <p className={styles.eventDate}><strong>Sfârșit:</strong> {formatDateTime(item.dataSfarsit, item.type)}</p>}
+                                    {item.locatie && <p className={styles.eventLocation}><strong>Locație:</strong> {item.locatie}</p>}
+                                    {item.categorie && <p className={styles.eventCategory}><strong>Categorie:</strong> {item.categorie}</p>}
+                                </>
+                            )}
+                            {/* Conținutul specific pentru birth/today a fost eliminat deoarece cardul nu mai e randat pentru ele */}
+                        </div>
+                    )}
+                </div>
+            );
+        });
+
     if (loading && evenimente.length === 0 && !showForm) {
         return <div className={styles.container}><p>Se încarcă evenimentele...</p></div>;
     }
 
-    if (error && !showForm) { // Only show global error if form is not open, as the form has its own error display
-        return <div className={styles.container}><p className={styles.errorText}>{error}</p></div>;
+    if (error && !(showForm && formError)) { 
+        return <div className={styles.timelinePageContainer}><p className={styles.errorText}>{error}</p></div>;
     }
 
-
     return (
-        <div className={styles.container}>
-            <h1>Timeline Personal</h1>
-
-            {userBirthDate && (
-                <div className={styles.birthDateDisplay}>
-                    <p><strong>Data Nașterii:</strong> {userBirthDate.toLocaleDateString('ro-RO', { year: 'numeric', month: 'long', day: 'numeric' })} - Începutul liniei vieții tale.</p>
-                </div>
-            )}
+        <div className={styles.timelinePageContainer}>
+            <h1 className={styles.title}>Timeline Personal</h1>
 
             <button onClick={() => setShowForm(!showForm)} className={styles.toggleFormButton}>
-                {showForm ? 'Anulează Adăugare Eveniment' : 'Adaugă Eveniment Nou'}
+                {showForm ? 'Anulează Adăugarea' : 'Adaugă Eveniment Nou'}
             </button>
 
             {showForm && (
                 <form onSubmit={handleSubmit} className={styles.eventForm}>
-                    <h2>Adaugă un Eveniment Nou</h2>
-                    {formError && <p className={styles.errorText}>{formError}</p>}
-                    
                     <div>
                         <label htmlFor="titlu">Titlu:</label>
                         <input type="text" id="titlu" name="titlu" value={formData.titlu} onChange={handleInputChange} required />
@@ -354,46 +287,11 @@ const TimelinePage: React.FC = () => {
                 </form>
             )}
 
-            {/* Secțiunea pentru noul timeline orizontal */} 
-            {userBirthDate && timelineRange && (
-                <div className={styles.horizontalTimelineContainer}>
-                    <div className={styles.timelineContentWrapper}> 
-                        <div className={styles.timelineAxis}></div> 
-                        {/* Events are now direct children for absolute positioning based on timelineRange */}
-                        {positionedEvents.map((event) => (
-                            <div key={`timeline-${event.id}`} className={styles.timelineEvent} style={event.style}>
-                                <div className={styles.eventMarker}></div>
-                                <div className={styles.eventDetailsPreview}>
-                                    <strong>{event.titlu}</strong>
-                                    <p>{formatDateTime(event.dataInceput)}</p>
-                                    {/* Afișăm și data de sfârșit dacă există */}
-                                    {event.dataSfarsit && 
-                                        <p style={{fontSize: '0.75em', opacity: 0.8}}>Până la: {formatDateTime(event.dataSfarsit)}</p>
-                                    }
-                                </div>
-                            </div>
-                        ))}
-                         {positionedEvents.length === 0 && evenimente.length > 0 && (
-                            <p className={styles.noEventsMessage} style={{position: 'absolute', top: '60%', left: '50%', transform: 'translateX(-50%)'}}>
-                                Evenimentele nu pot fi afișate pe timeline (verifică datele).</p>
-                        )}
-                    </div> 
-                </div>
-            )}
-            {/* Conditional rendering for when userBirthDate is known but there are no events to show on timeline */}
-            {userBirthDate && positionedEvents.length === 0 && evenimente.length === 0 && !loading && !showForm && (
-                 <p className={styles.noEventsMessage}>
-                    Nu aveți niciun eveniment înregistrat pentru a afișa pe timeline.
-                </p>
-            )}
-
-            {/* Mesaj dacă nu există evenimente pentru timeline-ul orizontal */} 
-            {/* Mesaj inițial dacă data nașterii nu e setată încă */}
-            {!userBirthDate && !loading && (
-                 <p className={styles.noEventsMessage}>
-                    Data nașterii nu este setată sau încărcată, timeline-ul nu poate fi afișat.
-                </p>
-            )}
+            <div className={styles.verticalTimelineContainer}>
+                {sortedTimelineItems.length > 0 ? sortedTimelineItems : 
+                    (!loading && <p className={styles.noEventsMessage}>Nu există evenimente de afișat.</p>)
+                }
+            </div>
         </div>
     );
 };
