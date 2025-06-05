@@ -68,22 +68,57 @@
     color: #495057;
 }
 
-/* Stiluri pentru butonul de toggle formular și submit */
-.toggleFormButton, .submitButton {
-    display: block;
-    margin: 20px auto;
-    padding: 10px 20px;
-    font-size: 16px;
-    color: white;
+.timelineHeader {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid #eee;
+}
+
+.timelineHeader h1 {
+    margin: 0;
+    color: #333;
+}
+
+.headerActions {
+    display: flex;
+    gap: 10px;
+}
+
+.headerButton {
     background-color: #007bff;
+    color: white;
+    padding: 10px 15px;
     border: none;
     border-radius: 5px;
     cursor: pointer;
+    font-size: 1rem;
     transition: background-color 0.3s ease;
+    display: flex;
+    align-items: center;
+    gap: 8px;
 }
 
-.toggleFormButton:hover, .submitButton:hover {
+.headerButton:hover {
     background-color: #0056b3;
+}
+
+.profileButton {
+    background-color: #17a2b8; /* Info blue */
+}
+
+.profileButton:hover {
+    background-color: #138496;
+}
+
+.addEventButtonMain {
+    background-color: #28a745; /* Green */
+}
+
+.addEventButtonMain:hover {
+    background-color: #218838;
 }
 
 /* Stiluri pentru formularul de adăugare eveniment */

@@ -87,9 +87,16 @@
 
 .mainContent p {
   font-size: 1.1rem;
-  color: #495057; /* Slightly lighter grey for paragraphs */
-  line-height: 1.7;
-  margin-bottom: 1rem;
+  line-height: 1.6;
+  margin-bottom: 20px;
+}
+
+.welcomeUser {
+  text-align: center;
+  color: #555;
+  font-size: 1.5rem; /* Mărime potrivită pentru un subtitlu */
+  margin-top: 10px; /* Spațiu față de titlul principal */
+  margin-bottom: 20px;
 }
 
 .mainContent a {
@@ -112,3 +119,21 @@
   font-size: 0.9rem;
   margin-top: auto; /* Pushes footer to the bottom */
 }
+
+.headerActions {
+  display: flex;
+  align-items: center;
+  gap: 1rem; /* Spațiu între butoane */
+}
+
+/* Clasa .profileButton este folosită în HomePage.tsx în combinație cu .actionButton.
+   Stilurile specifice pentru .profileButton pot fi adăugate aici dacă este necesar
+   pentru a suprascrie sau extinde .actionButton.
+   Pentru moment, .actionButton oferă stilurile de bază.
+*/
+
+/* Clasa .changePasswordButton este folosită în HomePage.tsx în combinație cu .actionButton.
+   Stilurile specifice pentru .changePasswordButton pot fi adăugate aici dacă este necesar
+   pentru a suprascrie sau extinde .actionButton.
+   Pentru moment, .actionButton oferă stilurile de bază.
+*/
