@@ -8,6 +8,7 @@ const SignupPage: React.FC = () => {
   const [fullName, setFullName] = useState(''); // Added fullName state
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
+  const [dateOfBirth, setDateOfBirth] = useState(''); // Moved state declaration for dateOfBirth
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
@@ -26,6 +27,7 @@ const SignupPage: React.FC = () => {
       email: email,
       parola: password, // Backend will hash this
       numeComplet: fullName || null, // Send null if fullName is empty
+      dataNastere: dateOfBirth || null, // Send dateOfBirth string (YYYY-MM-DD) or null
     };
 
     try {
@@ -76,6 +78,16 @@ const SignupPage: React.FC = () => {
             id="fullName"
             value={fullName}
             onChange={(e) => setFullName(e.target.value)}
+          />
+        </div>
+        <div className={styles.inputGroup}>
+          <label htmlFor="dateOfBirth">Date of Birth (Optional):</label>
+          <input
+            type="date"
+            id="dateOfBirth"
+            value={dateOfBirth}
+            onChange={(e) => setDateOfBirth(e.target.value)}
+            max={new Date().toISOString().split('T')[0]} // Set max to today
           />
         </div>
         <div className={styles.inputGroup}>

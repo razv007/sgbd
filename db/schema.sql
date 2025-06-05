@@ -22,7 +22,6 @@ BEGIN
   END LOOP;
 END;
 /
-
 -- =============================================================================
 -- SECVENȚE
 -- =============================================================================
@@ -204,3 +203,20 @@ FROM
     Evenimente e
 JOIN
     Utilizatori u ON e.utilizator_id = u.utilizator_id;
+
+CREATE OR REPLACE VIEW View_Detalii_Prietenii AS
+SELECT
+    p.prietenie_id,
+    u1.nume_utilizator AS nume_utilizator1,
+    u2.nume_utilizator AS nume_utilizator2,
+    p.stare_prietenie,
+    p.data_solicitare,
+    p.data_raspuns
+FROM
+    Prietenii p
+JOIN
+    Utilizatori u1 ON p.utilizator1_id = u1.utilizator_id
+JOIN
+    Utilizatori u2 ON p.utilizator2_id = u2.utilizator_id;
+    
+SELECT * FROM View_Detalii_Prietenii;

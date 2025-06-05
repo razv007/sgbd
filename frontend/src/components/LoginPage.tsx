@@ -31,11 +31,16 @@ const LoginPage: React.FC = () => {
       if (response.ok) {
         const data = await response.json();
         console.log('Login successful:', data);
-        // TODO: Store JWT token (e.g., in localStorage)
-        // localStorage.setItem('userToken', data.token); // Example
-        // TODO: Navigate to a protected page/dashboard
-        // navigate('/dashboard'); // Example
-        alert('Login successful! Token: ' + (data.token || data.accessToken)); // Display token for now
+        // Store JWT token (assuming the token is in data.token or data.accessToken)
+        const token = data.token || data.accessToken;
+        if (token) {
+          localStorage.setItem('userToken', token);
+          console.log('Token stored in localStorage');
+        } else {
+          console.warn('No token received from server');
+        }
+        // Navigate to the dashboard page
+        navigate('/'); // Navigate to the main application page (root)
       } else {
         // Try to parse error response as JSON, otherwise use text
         let errorResponseMessage = 'Login failed. Please check your credentials.';

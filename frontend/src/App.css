@@ -1,11 +1,12 @@
 #root {
   width: 100%;
-  height: 100vh; /* Ensure #root takes full viewport height */
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 0; /* Remove default padding */
-  margin: 0; /* Remove default margin */
+  min-height: 100vh; /* Use min-height to ensure it covers viewport but can grow */
+  display: flex; /* Keep flex to allow HomePage to manage its own height correctly */
+  flex-direction: column; /* Stack children vertically (like HomePage container) */
+  /* align-items: center; Removed */
+  /* justify-content: center; Removed */
+  padding: 0;
+  margin: 0;
 }
 
 .logo {

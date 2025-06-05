@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.AllArgsConstructor;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 @Data
@@ -33,6 +34,9 @@ public class Utilizator {
 
     @Column(name = "DATA_INREGISTRARE", nullable = false, updatable = false)
     private LocalDateTime dataInregistrare;
+
+    @Column(name = "DATA_NASTERE")
+    private LocalDate dataNastere;
 
     @Column(name = "ULTIMA_LOGARE")
     private LocalDateTime ultimaLogare;

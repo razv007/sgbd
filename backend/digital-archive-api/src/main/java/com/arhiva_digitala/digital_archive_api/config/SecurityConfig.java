@@ -81,6 +81,7 @@ public class SecurityConfig {
             .authorizeHttpRequests(authorize -> authorize
                 .requestMatchers("/api/auth/**").permitAll() // Allow public access to /api/auth/** endpoints
                 .requestMatchers("/api/test/**").permitAll() // Example: Allow public access to test endpoints
+                .requestMatchers("/api/evenimente/**").authenticated() // NECESITĂ AUTENTIFICARE pentru evenimente
                 .anyRequest().authenticated() // All other requests require authentication
             );
 
