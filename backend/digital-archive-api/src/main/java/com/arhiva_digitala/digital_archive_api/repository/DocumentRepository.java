@@ -17,4 +17,7 @@ public interface DocumentRepository extends JpaRepository<Document, Long> {
 
     @Query("SELECT d FROM Document d WHERE d.eveniment = :eveniment")
     List<Document> findAllByEveniment(@Param("eveniment") Eveniment eveniment);
+
+    @Query("SELECT d FROM Document d WHERE d.eveniment.id = :eventId")
+    List<Document> findByEvenimentId(Long eventId);
 }

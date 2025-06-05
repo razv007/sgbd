@@ -1,9 +1,7 @@
 package com.arhiva_digitala.digital_archive_api.service;
 
-import com.arhiva_digitala.digital_archive_api.model.Eveniment;
-import com.arhiva_digitala.digital_archive_api.model.Participare;
-import com.arhiva_digitala.digital_archive_api.model.ParticipariId;
-import com.arhiva_digitala.digital_archive_api.model.Utilizator;
+import com.arhiva_digitala.digital_archive_api.model.*;
+import com.arhiva_digitala.digital_archive_api.repository.DocumentRepository;
 import com.arhiva_digitala.digital_archive_api.repository.EvenimentRepository;
 import com.arhiva_digitala.digital_archive_api.repository.ParticipareRepository;
 import com.arhiva_digitala.digital_archive_api.repository.UtilizatorRepository;
@@ -23,6 +21,8 @@ public class EvenimentService {
     private final EvenimentRepository evenimentRepository;
     private final UtilizatorRepository utilizatorRepository;
     private final ParticipareRepository participareRepository;
+    private final DocumentRepository documentRepository;
+    private final S3Service s3Service;
 
     @Transactional
     public Eveniment createEveniment(Eveniment eveniment, String creatorUsername, List<String> participanti) {
@@ -95,14 +95,30 @@ public class EvenimentService {
     }
 
     @Transactional
-    public void deleteEveniment(Long id, String numeUtilizator) {
+    public void deleteEveniment(Long eventId, String numeUtilizator) {
         Utilizator utilizator = utilizatorRepository.findByNumeUtilizator(numeUtilizator)
                 .orElseThrow(() -> new UsernameNotFoundException("Utilizatorul nu a fost găsit: " + numeUtilizator));
 
-        Eveniment eveniment = evenimentRepository.findById(id)
-                .filter(event -> event.getUtilizator().equals(utilizator))
-                .orElseThrow(() -> new RuntimeException("Evenimentul nu a fost găsit sau nu poate fi șters: " + id)); // TODO: Custom exception
+        System.out.println("Deleting eventId: " + eventId + " for userId: " + utilizator.getId());
 
-        evenimentRepository.delete(eveniment);
+        Participare participare = participareRepository.findByEvenimentIdAndUtilizatorId(eventId, utilizator.getId())
+                .orElseThrow(() -> new RuntimeException("Participarea nu a fost găsită."));
+
+        participareRepository.delete(participare);
+
+        boolean hasOtherParticipants = participareRepository.existsByEvenimentId(eventId);
+
+        if (!hasOtherParticipants) {
+            // delete documents from S3 + DB
+            List<Document> docs = documentRepository.findByEvenimentId(eventId);
+            for (Document doc : docs) {
+                s3Service.deleteFile(doc.getUrl());
+            }
+            documentRepository.deleteAll(docs);
+
+            // delete the event itself
+            evenimentRepository.deleteById(eventId);
+        }
     }
+
 }
