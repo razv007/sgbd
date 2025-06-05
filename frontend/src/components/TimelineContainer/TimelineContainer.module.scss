@@ -1,0 +1,70 @@
+/* ------------- Stiluri pentru Timeline-ul Vertical ------------- */
+/* ------------- Stiluri pentru Timeline-ul Vertical (Design Nou) ------------- */
+.verticalTimelineContainer {
+	display: flex; /* Make it a flex container */
+	flex-direction: column; /* Stack events vertically */
+	align-items: center; /* Center items if they don't take full width, helps with the 48% width items */
+	position: relative;
+	margin: 2em auto;
+	padding: 2em 0;
+	width: 90%; /* Sau o altă valoare procentuală/fixă dacă se dorește o limită */
+
+	&.proportionalActive {
+		position: relative; /* Crucial for absolute positioning of children */
+		min-height: 75vh; /* Ensure a minimum height for the timeline */
+	}
+
+	/* Linia centrală a timeline-ului */
+	&::before {
+		content: "";
+		position: absolute;
+		top: 0;
+		left: 50%;
+		transform: translateX(-50%);
+		width: 4px;
+		height: 100%;
+		background-color: #007bff;
+		border-radius: 2px;
+	}
+
+	/* Stiluri pentru evenimente când modul proporțional NU este activ */
+	&:not(.proportionalActive) .verticalTimelineEvent {
+		position: relative; /* Comportamentul standard */
+	}
+
+	/* Stiluri pentru evenimente când modul proporțional ESTE activ */
+	&.proportionalActive .verticalTimelineEvent {
+		position: absolute;
+		margin-bottom: 0; /* Nu mai este necesar margin-bottom în modul absolut, top controlează poziția */
+		/* Width-ul rămâne 48% pentru a se alinia la stânga/dreapta axei */
+		/* 'left' și 'right' vor fi setate de .eventLeft și .eventRight */
+	}
+
+	&.proportionalActive .eventLeft {
+		left: 0; /* Already set, but good to be explicit for absolute context */
+		/* flex-direction is still row-reverse */
+	}
+
+	&.proportionalActive .eventRight {
+		right: 0;
+		/* flex-direction is still row */
+	}
+}
+
+/* Stil pentru mesajul 'Nu sunt evenimente' */
+.noEventsMessage {
+	text-align: center;
+	font-style: italic;
+	color: #6c757d;
+	margin-top: 30px;
+	padding: 15px;
+	background-color: #f8f9fa;
+	border-radius: 5px;
+}
+
+.loadingMessage {
+	text-align: center;
+	color: #6c757d;
+	font-style: italic;
+	padding: 20px;
+}

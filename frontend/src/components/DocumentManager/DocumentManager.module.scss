@@ -1,0 +1,39 @@
+.documentManager {
+	margin-top: 1rem;
+
+	.addBtn {
+		margin-bottom: 1rem;
+		padding: 0.5rem 1rem;
+		cursor: pointer;
+	}
+
+	.documentList {
+		display: flex;
+		flex-direction: column;
+		gap: 0.5rem;
+	}
+
+	.documentItem {
+		display: flex;
+		justify-content: space-between;
+		align-items: center;
+		background: #f9f9f9;
+		padding: 0.5rem;
+		border-radius: 5px;
+
+		a {
+			color: #007bff;
+			text-decoration: none;
+			flex-grow: 1;
+		}
+
+		button {
+			margin-left: 1rem;
+			cursor: pointer;
+			background: none;
+			border: none;
+			color: red;
+			font-weight: bold;
+		}
+	}
+}

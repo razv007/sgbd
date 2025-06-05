@@ -76,6 +76,25 @@ CREATE TABLE Evenimente (
     CONSTRAINT ck_evenimente_date CHECK (data_sfarsit IS NULL OR data_sfarsit >= data_inceput)
 );
 
+-- =============================================================================
+-- TABELA DOCUMENTE (LEGĂTURĂ 1:N CU EVENIMENTE)
+-- =============================================================================
+
+CREATE SEQUENCE seq_document_id START WITH 1 INCREMENT BY 1 NOCACHE NOCYCLE;
+
+CREATE TABLE Documente (
+    document_id NUMBER(10) NOT NULL,
+    eveniment_id NUMBER(10) NOT NULL,
+    nume_fisier VARCHAR2(255 CHAR) NOT NULL,
+    url VARCHAR2(1000 CHAR) NOT NULL UNIQUE,
+    data_incarcare TIMESTAMP DEFAULT SYSTIMESTAMP NOT NULL,
+    CONSTRAINT pk_documente PRIMARY KEY (document_id),
+    CONSTRAINT fk_documente_evenimente FOREIGN KEY (eveniment_id)
+        REFERENCES Evenimente(eveniment_id) ON DELETE CASCADE
+);
+
+CREATE INDEX idx_documente_eveniment_id ON Documente(eveniment_id);
+
 -- Tabela Amintiri_Digitale
 CREATE TABLE Amintiri_Digitale (
     amintire_id NUMBER(10) NOT NULL,

@@ -1,0 +1,101 @@
+.eventForm {
+	background-color: #ffffff; /* Fundal alb pentru formular */
+	padding: 25px;
+	border-radius: 8px;
+	box-shadow: 0 4px 8px rgba(0, 0, 0, 0.08);
+	margin-bottom: 30px;
+	border: 1px solid #e0e0e0;
+
+	h2 {
+		margin-top: 0;
+		margin-bottom: 20px;
+		color: #333;
+		text-align: center;
+	}
+}
+
+.formGroup {
+	margin-bottom: 18px;
+}
+
+.eventForm label {
+	display: block;
+	margin-bottom: 6px;
+	font-weight: bold;
+	color: #495057;
+}
+
+.eventForm input[type="text"],
+.eventForm input[type="datetime-local"],
+.eventForm textarea,
+.eventForm select {
+	width: 100%;
+	padding: 10px;
+	border: 1px solid #ced4da;
+	border-radius: 4px;
+	box-sizing: border-box;
+	font-size: 1rem;
+
+	&:disabled {
+		background-color: #f8f9fa;
+		cursor: not-allowed;
+		opacity: 0.7;
+	}
+}
+
+.eventForm textarea {
+	min-height: 100px;
+	resize: vertical;
+}
+
+.errorText {
+	color: #d9534f;
+	text-align: center;
+	margin-bottom: 1rem;
+	padding: 10px;
+	background-color: #f8d7da;
+	border: 1px solid #f5c6cb;
+	border-radius: 4px;
+}
+
+.buttonGroup {
+	display: flex;
+	gap: 10px;
+	justify-content: center;
+	margin-top: 20px;
+}
+
+.submitButton,
+.cancelButton {
+	padding: 10px 20px;
+	font-size: 16px;
+	border: none;
+	border-radius: 5px;
+	cursor: pointer;
+	transition: background-color 0.3s ease;
+
+	&:disabled {
+		cursor: not-allowed;
+		opacity: 0.7;
+	}
+}
+
+.submitButton {
+	color: white;
+	background-color: #007bff;
+
+	&:hover:not(:disabled) {
+		background-color: #0056b3;
+	}
+}
+
+.cancelButton {
+	color: #6c757d;
+	background-color: #f8f9fa;
+	border: 1px solid #dee2e6;
+
+	&:hover:not(:disabled) {
+		background-color: #e9ecef;
+		border-color: #adb5bd;
+	}
+}

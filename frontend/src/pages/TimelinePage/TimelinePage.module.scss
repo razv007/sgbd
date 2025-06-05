@@ -1,0 +1,50 @@
+.container {
+	padding: 2rem;
+	max-width: 900px;
+	margin: 2rem auto;
+	background-color: #f9f9f9;
+	border-radius: 8px;
+	box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+
+	h1 {
+		text-align: center;
+		color: #333;
+		margin-bottom: 2rem;
+	}
+}
+
+.errorText {
+	color: #d9534f; /* Roșu pentru erori */
+	text-align: center;
+	margin-bottom: 1rem; /* Adăugat spațiu dedesubt */
+}
+
+.timelinePageContainer {
+	max-width: 1200px; /* Adjust as needed */
+	margin-left: auto;
+	margin-right: auto;
+	padding: 20px;
+}
+
+.title {
+	text-align: center;
+	color: #333;
+	margin-bottom: 2rem;
+}
+
+.toggleFormButton {
+	display: block;
+	margin: 0 auto 20px auto; /* Center button and add space below */
+	padding: 10px 20px;
+	background-color: #007bff;
+	color: white;
+	border: none;
+	border-radius: 5px;
+	cursor: pointer;
+	font-size: 1em;
+	transition: background-color 0.3s ease;
+
+	&:hover {
+		background-color: #0056b3;
+	}
+}
