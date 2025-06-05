@@ -10,6 +10,7 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
@@ -81,6 +82,9 @@ public class SecurityConfig {
             .authorizeHttpRequests(authorize -> authorize
                 .requestMatchers("/api/auth/**").permitAll() // Allow public access to /api/auth/** endpoints
                 .requestMatchers("/api/test/**").permitAll() // Example: Allow public access to test endpoints
+                .requestMatchers(HttpMethod.GET, "/api/profil").authenticated() // Explicitly allow GET /api/profil for authenticated users
+                .requestMatchers(HttpMethod.PUT, "/api/profil").authenticated() // Explicitly allow PUT /api/profil for authenticated users
+                .requestMatchers(HttpMethod.POST, "/api/profil/change-password").authenticated() // Allow POST /api/profil/change-password for authenticated users
                 .requestMatchers("/api/evenimente/**").authenticated() // NECESITĂ AUTENTIFICARE pentru evenimente
                 .anyRequest().authenticated() // All other requests require authentication
             );
