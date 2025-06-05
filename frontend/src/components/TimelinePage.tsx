@@ -226,6 +226,12 @@ const TimelinePage: React.FC = () => {
                                     {item.categorie && <p className={styles.eventCategory}><strong>Categorie:</strong> {item.categorie}</p>}
                                 </>
                             )}
+                            {item.type === 'event' && (
+                                <div className={styles.eventArtifacts}>
+                                    <h4>Artefacte:</h4>
+                                    <p><i>(Afișare imagini, PDF-uri etc. aici)</i></p>
+                                </div>
+                            )}
                             {/* Conținutul specific pentru birth/today a fost eliminat deoarece cardul nu mai e randat pentru ele */}
                         </div>
                     )}
