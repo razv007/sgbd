@@ -49,6 +49,7 @@ CREATE TABLE Utilizatori (
     este_activ NUMBER(1) DEFAULT 1 NOT NULL, -- 1 pentru activ, 0 pentru inactiv
     rol VARCHAR2(20 CHAR) DEFAULT 'USER' NOT NULL, -- ex: USER, ADMIN
     preferinte_notificari CLOB, -- JSON sau XML pentru setări detaliate
+    DATA_NASTERE DATE,
     CONSTRAINT pk_utilizatori PRIMARY KEY (utilizator_id),
     CONSTRAINT uk_utilizatori_nume_utilizator UNIQUE (nume_utilizator),
     CONSTRAINT uk_utilizatori_email UNIQUE (email),

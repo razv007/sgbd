@@ -6,6 +6,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.Optional;
+
 @Service // Marks this class as a Spring service component
 public class AuthService {
 
@@ -37,4 +39,9 @@ public class AuthService {
     }
 
     // We will add login logic here later
+
+    public Utilizator getUtilizatorByNumeUtilizator(String numeUtilizator) {
+        Optional<Utilizator> utilizatorOptional = utilizatorRepository.findByNumeUtilizator(numeUtilizator);
+        return utilizatorOptional.orElseThrow(() -> new RuntimeException("Utilizator nu a fost găsit cu numele: " + numeUtilizator));
+    }
 }

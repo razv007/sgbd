@@ -36,6 +36,14 @@ const LoginPage: React.FC = () => {
         if (token) {
           localStorage.setItem('userToken', token);
           console.log('Token stored in localStorage');
+
+          // Store user's birth date if available
+          if (data.dataNastere) {
+            localStorage.setItem('userDataNastere', data.dataNastere);
+            console.log('User birth date stored in localStorage:', data.dataNastere);
+          } else {
+            console.warn('No birth date received from server for the user.');
+          }
         } else {
           console.warn('No token received from server');
         }

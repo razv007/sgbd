@@ -17,6 +17,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -76,11 +77,15 @@ public class AuthController {
         // Assuming the first role is the primary one, or adjust logic if multiple roles are handled differently
         String userRole = roles.isEmpty() ? null : roles.get(0);
 
+        // Preluare dataNastere
+        Utilizator utilizator = authService.getUtilizatorByNumeUtilizator(userDetails.getUsername());
+        LocalDate dataNastere = utilizator.getDataNastere();
 
         return ResponseEntity.ok(new JwtResponse(jwt,
                 userDetails.getId(),
                 userDetails.getUsername(),
                 userDetails.getEmail(),
-                userRole));
+                userRole,
+                dataNastere));
     }
 }

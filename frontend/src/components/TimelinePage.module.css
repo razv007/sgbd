@@ -16,6 +16,7 @@
 .errorText {
     color: #d9534f; /* Roșu pentru erori */
     text-align: center;
+    margin-bottom: 1rem; /* Adăugat spațiu dedesubt */
 }
 
 .eventList {
@@ -50,3 +51,195 @@
     color: #777;
     font-size: 0.9rem;
 }
+
+/* Stil pentru afișarea datei de naștere */
+.birthDateDisplay {
+    text-align: center;
+    margin-bottom: 20px;
+    padding: 10px;
+    background-color: #e9ecef; /* Fundal puțin diferit */
+    border-radius: 5px;
+    border: 1px solid #ced4da;
+}
+
+.birthDateDisplay p {
+    margin: 0;
+    font-style: italic;
+    color: #495057;
+}
+
+/* Stiluri pentru butonul de toggle formular și submit */
+.toggleFormButton, .submitButton {
+    display: block;
+    margin: 20px auto;
+    padding: 10px 20px;
+    font-size: 16px;
+    color: white;
+    background-color: #007bff;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.toggleFormButton:hover, .submitButton:hover {
+    background-color: #0056b3;
+}
+
+/* Stiluri pentru formularul de eveniment */
+.eventForm {
+    background-color: #ffffff; /* Fundal alb pentru formular */
+    padding: 25px;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.08);
+    margin-bottom: 30px;
+    border: 1px solid #e0e0e0;
+}
+
+.eventForm h2 {
+    margin-top: 0;
+    margin-bottom: 20px;
+    color: #333;
+    text-align: center;
+}
+
+.eventForm div { /* Consider using a more specific class like .formGroup */
+    margin-bottom: 18px;
+}
+
+.eventForm label {
+    display: block;
+    margin-bottom: 6px;
+    font-weight: bold;
+    color: #495057;
+}
+
+.eventForm input[type="text"],
+.eventForm input[type="datetime-local"],
+.eventForm textarea,
+.eventForm select {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ced4da;
+    border-radius: 4px;
+    box-sizing: border-box;
+    font-size: 1rem;
+}
+
+.eventForm textarea {
+    min-height: 100px;
+    resize: vertical;
+}
+
+/* Stil pentru mesajul 'Nu sunt evenimente' */
+.noEventsMessage {
+    text-align: center;
+    font-style: italic;
+    color: #6c757d;
+    margin-top: 30px;
+    padding: 15px;
+    background-color: #f8f9fa;
+    border-radius: 5px;
+}
+
+
+/* ------------- Stiluri pentru Timeline-ul Orizontal ------------- */
+
+.horizontalTimelineContainer {
+    width: 100%;
+    overflow-x: auto; /* Permite scroll orizontal */
+    padding: 20px 0; /* Reducem padding-ul vertical puțin */
+    margin-top: 30px;
+    border-top: 1px solid #dee2e6;
+    border-bottom: 1px solid #dee2e6;
+    background-color: #f8f9fa;
+}
+
+.timelineContentWrapper {
+    position: relative; /* Container de referință pentru axă și evenimente */
+    display: inline-block; /* Se va extinde cât e nevoie pentru conținut */
+    min-width: 100%; /* Ocupă cel puțin lățimea vizibilă */
+    padding: 40px 20px; /* Spațiu pentru ca evenimentele să nu atingă marginile */
+}
+
+.timelineAxis {
+    position: absolute;
+    left: 0;
+    right: 0; /* Se întinde pe toată lățimea .timelineContentWrapper */
+    top: 50%; /* Centrat vertical în .timelineContentWrapper (sau la o înălțime specifică) */
+    transform: translateY(-50%); /* Ajustare fină pentru centrare verticală */
+    height: 4px;
+    background-color: #007bff;
+    border-radius: 2px;
+    z-index: 1; /* Sub markeri */
+}
+
+.timelineEventsContainer {
+    position: relative; /* Poziționat relativ la .timelineContentWrapper */
+    display: flex;
+    align-items: flex-start; /* Aliniem evenimentele la partea de sus */
+    /* Acest container nu mai are nevoie de margin-top negativ */
+    /* Lățimea sa va fi determinată de conținutul flex */
+    padding-top: 25px; /* Spațiu deasupra evenimentelor, sub axă */
+    padding-bottom: 25px; /* Spațiu sub evenimente */
+    z-index: 2; /* Deasupra axei, dar sub markeri dacă e nevoie */
+}
+
+.timelineEvent {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-right: 40px; /* Spațiu între evenimente, poate fi ajustat */
+    position: relative; /* Important pentru poziționarea markerului */
+    min-width: 200px; /* Lățime minimă pentru cardul de eveniment */
+    flex-shrink: 0;
+    padding-top: 30px; /* Spațiu pentru marker deasupra cardului */
+}
+
+.timelineEvent:last-child {
+    margin-right: 0; /* Eliminăm marginea pentru ultimul element */
+}
+
+.eventMarker {
+    width: 18px;
+    height: 18px;
+    background-color: #0056b3;
+    border-radius: 50%;
+    border: 3px solid #f8f9fa; /* Culoarea fundalului containerului pentru un efect de 'decupare' */
+    box-shadow: 0 0 0 2px #0056b3; /* Un inel suplimentar */
+    position: absolute;
+    top: 0; /* Aliniat la partea de sus a .timelineEvent (care are padding-top) */
+    left: 50%;
+    transform: translateX(-50%) translateY(-50%); /* Centrează markerul pe axă */
+                                                /* translateY(-50%) îl urcă jumătate din înălțimea sa */
+                                                /* pentru a-l centra pe linia axei (care e la top: 50% din wrapper) */
+    z-index: 3; /* Deasupra tuturor */
+}
+
+.eventDetailsPreview {
+    background-color: #ffffff;
+    padding: 15px 20px;
+    border-radius: 8px;
+    box-shadow: 0 3px 8px rgba(0,0,0,0.12);
+    text-align: center;
+    width: 100%; /* Ocupă lățimea .timelineEvent */
+    border: 1px solid #d6d8db;
+    position: relative; 
+    z-index: 1;
+}
+
+.eventDetailsPreview strong {
+    font-size: 1.05em;
+    color: #007bff;
+    display: block;
+    margin-bottom: 8px;
+    font-weight: 600;
+}
+
+.eventDetailsPreview p {
+    font-size: 0.9em;
+    color: #495057;
+    margin: 0;
+    line-height: 1.5;
+}
+

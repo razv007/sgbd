@@ -1,5 +1,7 @@
 package com.arhiva_digitala.digital_archive_api.dto;
 
+import java.time.LocalDate;
+
 public class JwtResponse {
     private String token;
     private String type = "Bearer";
@@ -7,13 +9,15 @@ public class JwtResponse {
     private String numeUtilizator;
     private String email;
     private String rol;
+    private LocalDate dataNastere;
 
-    public JwtResponse(String accessToken, Long id, String numeUtilizator, String email, String rol) {
+    public JwtResponse(String accessToken, Long id, String numeUtilizator, String email, String rol, LocalDate dataNastere) {
         this.token = accessToken;
         this.id = id;
         this.numeUtilizator = numeUtilizator;
         this.email = email;
         this.rol = rol;
+        this.dataNastere = dataNastere;
     }
 
     // Getters and Setters
@@ -63,5 +67,13 @@ public class JwtResponse {
 
     public void setRol(String rol) {
         this.rol = rol;
+    }
+
+    public LocalDate getDataNastere() {
+        return dataNastere;
+    }
+
+    public void setDataNastere(LocalDate dataNastere) {
+        this.dataNastere = dataNastere;
     }
 }
