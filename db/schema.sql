@@ -122,6 +122,7 @@ BEGIN
 END;
 /
 
+<<<<<<< HEAD
 -- =============================================================================
 -- USER SIMILARITY FUNCTION
 -- =============================================================================
@@ -307,3 +308,23 @@ BEGIN
     DBMS_OUTPUT.PUT_LINE('Test Score: ' || v_score);
 END;
 /
+=======
+
+-- CREATE OR REPLACE TRIGGER trg_delete_event_if_no_participants
+-- AFTER DELETE ON Participari
+-- FOR EACH ROW
+-- DECLARE
+--     v_count NUMBER;
+-- BEGIN
+--     -- Count remaining participants for the event
+--     SELECT COUNT(*) INTO v_count
+--     FROM Participari
+--     WHERE eveniment_id = :OLD.eveniment_id;
+
+--     -- If none are left, delete the event
+--     IF v_count = 0 THEN
+--         DELETE FROM Evenimente WHERE eveniment_id = :OLD.eveniment_id;
+--     END IF;
+-- END;
+-- /
+>>>>>>> 6a0ba1a4e97e022f694a35609d9efe4c72b535e8

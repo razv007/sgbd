@@ -47,9 +47,9 @@ const TimelinePage: React.FC = () => {
 					setError("Sesiune expirată sau neautorizată.");
 					return;
 				}
-				const errorMessage = 
-					err.response?.data?.message || 
-					err.response?.data?.error || 
+				const errorMessage =
+					err.response?.data?.message ||
+					err.response?.data?.error ||
 					`Eroare ${status}`;
 				setError(errorMessage);
 			} else {
@@ -69,6 +69,14 @@ const TimelinePage: React.FC = () => {
 		fetchEvenimente();
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [navigate]);
+
+	useEffect(() => {
+		if (showForm) {
+			document.body.style.overflow = "hidden";
+		} else {
+			document.body.style.overflow = "auto";
+		}
+	}, [showForm]);
 
 	const handleEventCreated = async () => {
 		setShowForm(false);
@@ -108,11 +116,19 @@ const TimelinePage: React.FC = () => {
 			</button>
 
 			{showForm && (
-				<EventForm
-					onEventCreated={handleEventCreated}
-					onError={handleFormError}
-					onCancel={() => setShowForm(false)}
-				/>
+				<>
+					<div
+						className={styles.overlay}
+						onClick={() => setShowForm(false)}
+					/>
+					<div className={styles.formModal}>
+						<EventForm
+							onEventCreated={handleEventCreated}
+							onError={handleFormError}
+							onCancel={() => setShowForm(false)}
+						/>
+					</div>
+				</>
 			)}
 
 			<TimelineContainer

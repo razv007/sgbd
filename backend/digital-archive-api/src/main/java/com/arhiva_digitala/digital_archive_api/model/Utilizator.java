@@ -1,5 +1,6 @@
 package com.arhiva_digitala.digital_archive_api.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -12,6 +13,7 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @Entity
 @Table(name = "UTILIZATORI")
+@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 public class Utilizator {
 
     @Id
