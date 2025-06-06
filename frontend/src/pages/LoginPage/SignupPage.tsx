@@ -64,12 +64,11 @@ const SignupPage: React.FC = () => {
 	};
 
 	return (
-		<div className={styles.loginForm}>
-			{" "}
-			{/* Reusing loginForm style for the card layout */}
-			<h1 className={styles.appTitle}>Arhiva Digitală</h1>
-			<h2>Create Account</h2>
-			<form onSubmit={handleSubmit}>
+		<div className={styles.container}>
+			<div className={styles.formWrapper}>
+				{/* Using formWrapper for the card layout */}
+				<h2>Create Account</h2>
+				<form onSubmit={handleSubmit}>
 				<div className={styles.inputGroup}>
 					<label htmlFor="username">Username:</label>
 					<input
@@ -131,7 +130,7 @@ const SignupPage: React.FC = () => {
 						required
 					/>
 				</div>
-				{error && <p className={styles.error}>{error}</p>}
+				{error && <p className={styles.errorMessage}>{error}</p>}
 				<button
 					type="submit"
 					disabled={loading}
@@ -139,10 +138,11 @@ const SignupPage: React.FC = () => {
 				>
 					{loading ? "Creating Account..." : "Sign Up"}
 				</button>
-			</form>
-			<Link to="/login" className={styles.link}>
-				Autentifică-te
-			</Link>
+				</form>
+				<Link to="/login" className={styles.link}>
+					Autentifică-te
+				</Link>
+			</div>
 		</div>
 	);
 };

@@ -88,42 +88,40 @@ const LoginPage: React.FC = () => {
 	};
 
 	return (
-		<div className={styles.loginForm}>
-			<h1 className={styles.appTitle}>Arhiva Digitală</h1>
-			<h2>Login</h2>
-			<form onSubmit={handleSubmit}>
-				<div className={styles.inputGroup}>
-					<label htmlFor="username">Username:</label>
-					<input
-						type="text"
-						id="username"
-						value={username}
-						onChange={(e) => setUsername(e.target.value)}
-						required
-					/>
-				</div>
-				<div className={styles.inputGroup}>
-					<label htmlFor="password">Password:</label>
-					<input
-						type="password"
-						id="password"
-						value={password}
-						onChange={(e) => setPassword(e.target.value)}
-						required
-					/>
-				</div>
-				{error && <p className={styles.error}>{error}</p>}
-				<button
-					type="submit"
-					disabled={loading}
-					className={styles.button}
-				>
-					{loading ? "Logging in..." : "Login"}
-				</button>
-			</form>
-			<Link to="/signup" className={styles.link}>
-				Înregistrează-te
-			</Link>
+		<div className={styles.container}>
+			<div className={styles.formWrapper}>
+				{/* Optional: Add a main title for the app here if desired, e.g., <h1>Arhiva Digitală</h1> */}
+				<h2>Login</h2>
+				<form onSubmit={handleSubmit}>
+					<div className={styles.inputGroup}>
+						<label htmlFor="username">Username:</label>
+						<input
+							type="text"
+							id="username"
+							value={username}
+							onChange={(e) => setUsername(e.target.value)}
+							required
+						/>
+					</div>
+					<div className={styles.inputGroup}>
+						<label htmlFor="password">Password:</label>
+						<input
+							type="password"
+							id="password"
+							value={password}
+							onChange={(e) => setPassword(e.target.value)}
+							required
+						/>
+					</div>
+					{error && <p className={styles.errorMessage}>{error}</p>}
+					<button type="submit" disabled={loading} className={styles.button}>
+						{loading ? "Logging in..." : "Login"}
+					</button>
+				</form>
+				<Link to="/signup" className={styles.link}>
+					Nu ai cont? Înregistrează-te
+				</Link>
+			</div>
 		</div>
 	);
 };

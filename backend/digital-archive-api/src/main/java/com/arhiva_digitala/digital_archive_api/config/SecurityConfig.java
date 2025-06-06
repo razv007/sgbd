@@ -79,9 +79,11 @@ public class SecurityConfig {
             .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS)) // Use stateless sessions
             .exceptionHandling(exception -> exception.authenticationEntryPoint(unauthorizedHandler)) // Handles auth errors
             .authorizeHttpRequests(authorize -> authorize
+                .requestMatchers(org.springframework.http.HttpMethod.OPTIONS, "/**").permitAll() // Allow all OPTIONS requests for CORS preflight
                 .requestMatchers("/api/auth/**").permitAll() // Allow public access to /api/auth/** endpoints
                 .requestMatchers("/api/test/**").permitAll() // Example: Allow public access to test endpoints
                 .requestMatchers("/api/evenimente/**").authenticated() // NECESITĂ AUTENTIFICARE pentru evenimente
+                .requestMatchers("/api/users/me").authenticated() // Endpoint pentru datele utilizatorului curent
                 .anyRequest().authenticated() // All other requests require authentication
             );
 

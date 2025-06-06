@@ -15,4 +15,3 @@ public class ParticipariId implements Serializable {
     private Long evenimentId;
     private Long utilizatorId;
 }
-

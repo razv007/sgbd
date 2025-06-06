@@ -111,7 +111,7 @@ FROM
     Evenimente e
 JOIN
     Utilizatori u ON e.utilizator_id = u.utilizator_id;
-
+    
 CREATE OR REPLACE TRIGGER trg_update_evenimente
 AFTER INSERT ON Documente
 FOR EACH ROW

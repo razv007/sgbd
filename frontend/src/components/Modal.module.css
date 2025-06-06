@@ -1,0 +1,60 @@
+/* Modal.module.css - Aligned with the new modern theme */
+.modalOverlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(44, 62, 80, 0.7); /* Dark slate blue overlay, slightly more transparent */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1050; /* Ensure modal is above other content if any */
+  padding: 20px;
+}
+
+.modalContent {
+  background-color: #ffffff;
+  padding: 30px 35px; /* Increased padding for more space */
+  border-radius: 6px; /* Consistent with .mainContent */
+  box-shadow: 0 5px 20px rgba(0, 0, 0, 0.15); /* Softer, more diffused shadow */
+  min-width: 320px;
+  max-width: 550px; /* Slightly wider for better form layout */
+  width: 100%;
+  max-height: 90vh;
+  overflow-y: auto;
+  position: relative;
+  border-top: 4px solid #3498db; /* New primary action color accent */
+}
+
+.modalHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+  padding-bottom: 15px;
+  border-bottom: 1px solid #e0e0e0; /* Lighter border, consistent with header */
+}
+
+.modalTitle {
+  margin: 0;
+  font-size: 1.6rem; /* Slightly larger title */
+  color: #2c3e50; /* Consistent title color */
+  font-weight: 600;
+}
+
+.closeButton {
+  background: transparent;
+  border: none;
+  font-size: 2.2rem; /* Larger, more accessible close button */
+  font-weight: 300;
+  color: #7f8c8d; /* Neutral grey */
+  cursor: pointer;
+  padding: 0;
+  line-height: 1;
+  transition: color 0.2s ease-in-out;
+}
+
+.closeButton:hover {
+  color: #34495e; /* Darker slate blue on hover */
+}

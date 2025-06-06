@@ -24,4 +24,3 @@ public class Participare {
     @JoinColumn(name = "UTILIZATOR_ID", nullable = false)
     private Utilizator utilizator;
 }
-

@@ -1,0 +1,83 @@
+/* UserProfileForm.module.css - Aligned with the new modern theme */
+.formContainer {
+  display: flex;
+  flex-direction: column;
+  gap: 28px; /* Increased gap for better spacing */
+}
+
+.formGroup {
+  display: flex;
+  flex-direction: column;
+}
+
+.formGroup label {
+  margin-bottom: 8px;
+  font-weight: 500;
+  color: #555e68; /* Consistent label color */
+  font-size: 0.9rem;
+}
+
+.formGroup input[type='text'],
+.formGroup input[type='email'] {
+  padding: 12px 14px; /* Increased padding for a better feel */
+  border: 1px solid #bdc3c7; /* Neutral grey border */
+  border-radius: 4px; /* Consistent border radius */
+  font-size: 1rem;
+  color: #34495e; /* Dark slate blue for input text */
+  background-color: #ffffff;
+  transition: border-color 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+}
+
+.formGroup input[type='text']:focus,
+.formGroup input[type='email']:focus {
+  border-color: #3498db; /* Primary action color on focus */
+  outline: 0;
+  box-shadow: 0 0 0 0.2rem rgba(52, 152, 219, 0.25); /* Subtle focus shadow with primary color */
+}
+
+.submitButton {
+  background-color: #3498db; /* Primary action color (vibrant blue) */
+  color: white;
+  border: none;
+  padding: 12px 20px; /* Adjusted padding */
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 1rem;
+  font-weight: 500;
+  transition: background-color 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+  align-self: flex-start;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-top: 25px; /* Increased top margin */
+}
+
+.submitButton:hover {
+  background-color: #2980b9; /* Darker vibrant blue on hover */
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.12);
+}
+
+.successMessage {
+  padding: 12px 15px;
+  margin-top: 20px; /* Increased top margin */
+  border-radius: 4px;
+  font-size: 0.95rem;
+  text-align: center;
+  border-width: 1px;
+  border-style: solid;
+  background-color: #e8f5e9; /* Lighter green for success */
+  color: #2e7d32;
+  border-color: #a5d6a7;
+}
+
+.errorMessage {
+  padding: 12px 15px;
+  margin-top: 20px; /* Increased top margin */
+  border-radius: 4px;
+  font-size: 0.95rem;
+  text-align: center;
+  border-width: 1px;
+  border-style: solid;
+  background-color: #ffebee; /* Lighter red for error */
+  color: #c62828;
+  border-color: #ef9a9a;
+}
