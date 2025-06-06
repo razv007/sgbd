@@ -2,12 +2,13 @@
 .formContainer {
   display: flex;
   flex-direction: column;
-  gap: 28px; /* Increased gap for better spacing */
+  gap: 35px; /* Further increased gap for more vertical spacing */
 }
 
 .formGroup {
   display: flex;
   flex-direction: column;
+  margin-bottom: 16px; /* Added space between form groups */
 }
 
 .formGroup label {
