@@ -3,7 +3,8 @@ package com.arhiva_digitala.digital_archive_api.controller;
 import com.arhiva_digitala.digital_archive_api.dto.CurrentUserDto;
 import com.arhiva_digitala.digital_archive_api.model.Utilizator;
 import com.arhiva_digitala.digital_archive_api.security.UserPrincipal;
-import com.arhiva_digitala.digital_archive_api.service.UserService; // Keep for now, might be used elsewhere or in future
+import com.arhiva_digitala.digital_archive_api.service.UserService;
+import com.arhiva_digitala.digital_archive_api.service.UserRecommendationService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,11 +20,14 @@ import com.arhiva_digitala.digital_archive_api.model.Utilizator;
 import jakarta.validation.Valid;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.time.format.DateTimeFormatter;
 import java.util.stream.Collectors;
+import java.util.List;
+import com.arhiva_digitala.digital_archive_api.dto.UserDto;
 import org.springframework.security.access.prepost.PreAuthorize;
 import com.arhiva_digitala.digital_archive_api.exception.ResourceNotFoundException;
 
@@ -34,10 +38,12 @@ public class UserController {
     private static final Logger logger = LoggerFactory.getLogger(UserController.class);
 
     private final UserService userService;
+    private final UserRecommendationService userRecommendationService;
 
     @Autowired
-    public UserController(UserService userService) {
+    public UserController(UserService userService, UserRecommendationService userRecommendationService) {
         this.userService = userService;
+        this.userRecommendationService = userRecommendationService;
     }
 
     @GetMapping("/me")
@@ -143,6 +149,30 @@ public class UserController {
         } catch (Exception e) {
             logger.error("Error updating profile for user ID: {}. Details: ", currentUserPrincipal.getId(), e);
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Eroare internă la actualizarea profilului.");
+        }
+    }
+
+    @GetMapping("/recommendations")
+    @PreAuthorize("isAuthenticated()")
+    public ResponseEntity<?> getUserRecommendations(@AuthenticationPrincipal UserPrincipal currentUserPrincipal,
+                                                      @RequestParam(defaultValue = "5") int count) {
+        logger.info("--- UserController#getUserRecommendations --- START --- User ID: {}, Count: {}", currentUserPrincipal.getId(), count);
+        if (currentUserPrincipal == null) {
+            logger.warn("UserPrincipal is null in getUserRecommendations. Returning 401 Unauthorized.");
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Utilizator neautorizat.");
+        }
+
+        try {
+            List<UserDto> recommendations = userRecommendationService.getRecommendations(currentUserPrincipal.getId(), count);
+            if (recommendations.isEmpty()) {
+                logger.info("No recommendations found for user ID: {}", currentUserPrincipal.getId());
+                return ResponseEntity.noContent().build(); // 204 No Content
+            }
+            logger.info("Successfully retrieved {} recommendations for user ID: {}", recommendations.size(), currentUserPrincipal.getId());
+            return ResponseEntity.ok(recommendations);
+        } catch (Exception e) {
+            logger.error("Error retrieving recommendations for user ID: {}. Details: ", currentUserPrincipal.getId(), e);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Eroare internă la preluarea recomandărilor.");
         }
     }
 }
