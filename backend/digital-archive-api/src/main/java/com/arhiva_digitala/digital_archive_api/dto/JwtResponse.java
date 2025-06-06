@@ -10,14 +10,16 @@ public class JwtResponse {
     private String email;
     private String rol;
     private LocalDate dataNastere;
+    private String numeComplet;
 
-    public JwtResponse(String accessToken, Long id, String numeUtilizator, String email, String rol, LocalDate dataNastere) {
+    public JwtResponse(String accessToken, Long id, String numeUtilizator, String email, String rol, LocalDate dataNastere, String numeComplet) {
         this.token = accessToken;
         this.id = id;
         this.numeUtilizator = numeUtilizator;
         this.email = email;
         this.rol = rol;
         this.dataNastere = dataNastere;
+        this.numeComplet = numeComplet;
     }
 
     // Getters and Setters
@@ -75,5 +77,13 @@ public class JwtResponse {
 
     public void setDataNastere(LocalDate dataNastere) {
         this.dataNastere = dataNastere;
+    }
+
+    public String getNumeComplet() {
+        return numeComplet;
+    }
+
+    public void setNumeComplet(String numeComplet) {
+        this.numeComplet = numeComplet;
     }
 }

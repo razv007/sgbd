@@ -38,9 +38,6 @@ public class Utilizator {
     @Column(name = "DATA_NASTERE")
     private LocalDate dataNastere;
 
-    @Column(name = "ULTIMA_LOGARE")
-    private LocalDateTime ultimaLogare;
-
     @PrePersist
     protected void onCreate() {
         if (this.dataInregistrare == null) {

@@ -5,28 +5,24 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="294afe95-7db5-40db-bc01-6aa9b5299e2c" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/.gitignore" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/modules.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/proiect sgbd.iml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/vcs.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/digital-archive-api/mvnw" beforeDir="false" afterPath="$PROJECT_DIR$/backend/digital-archive-api/mvnw" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/dataSources.local.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/dataSources.local.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/digital-archive-api/src/main/java/com/arhiva_digitala/digital_archive_api/config/SecurityConfig.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/digital-archive-api/src/main/java/com/arhiva_digitala/digital_archive_api/config/SecurityConfig.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/digital-archive-api/src/main/java/com/arhiva_digitala/digital_archive_api/controller/AuthController.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/digital-archive-api/src/main/java/com/arhiva_digitala/digital_archive_api/controller/AuthController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/digital-archive-api/src/main/java/com/arhiva_digitala/digital_archive_api/dto/JwtResponse.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/digital-archive-api/src/main/java/com/arhiva_digitala/digital_archive_api/dto/JwtResponse.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/digital-archive-api/src/main/java/com/arhiva_digitala/digital_archive_api/model/Document.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/digital-archive-api/src/main/java/com/arhiva_digitala/digital_archive_api/model/Document.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/digital-archive-api/src/main/java/com/arhiva_digitala/digital_archive_api/model/Eveniment.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/digital-archive-api/src/main/java/com/arhiva_digitala/digital_archive_api/model/Eveniment.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/digital-archive-api/src/main/java/com/arhiva_digitala/digital_archive_api/model/Utilizator.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/digital-archive-api/src/main/java/com/arhiva_digitala/digital_archive_api/model/Utilizator.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/digital-archive-api/src/main/java/com/arhiva_digitala/digital_archive_api/security/jwt/AuthTokenFilter.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/digital-archive-api/src/main/java/com/arhiva_digitala/digital_archive_api/security/jwt/AuthTokenFilter.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/digital-archive-api/src/main/java/com/arhiva_digitala/digital_archive_api/security/jwt/JwtUtils.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/digital-archive-api/src/main/java/com/arhiva_digitala/digital_archive_api/security/jwt/JwtUtils.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/digital-archive-api/src/main/java/com/arhiva_digitala/digital_archive_api/security/services/UserDetailsServiceImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/digital-archive-api/src/main/java/com/arhiva_digitala/digital_archive_api/security/services/UserDetailsServiceImpl.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/backend/digital-archive-api/src/main/resources/application.properties" beforeDir="false" afterPath="$PROJECT_DIR$/backend/digital-archive-api/src/main/resources/application.properties" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/index.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/package-lock.json" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/package-lock.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/package.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/App.css" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/App.css" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/App.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/App.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/assets/react.svg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/components/HomePage.module.css" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/components/HomePage.tsx" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/components/LoginPage.module.css" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/components/LoginPage.tsx" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/components/SignupPage.tsx" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/components/TimelinePage.module.css" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/components/TimelinePage.tsx" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/index.css" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/main.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/main.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/db/schema.sql" beforeDir="false" afterPath="$PROJECT_DIR$/db/schema.sql" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/src/pages/HomePage/HomePage.module.css" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/pages/HomePage/HomePage.module.css" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/src/pages/HomePage/HomePage.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/pages/HomePage/HomePage.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/src/pages/LoginPage/LoginPage.module.css" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/pages/LoginPage/LoginPage.module.css" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/src/pages/LoginPage/LoginPage.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/pages/LoginPage/LoginPage.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/src/pages/LoginPage/SignupPage.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/pages/LoginPage/SignupPage.tsx" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -65,7 +61,7 @@
     "ModuleVcsDetector.initialDetectionPerformed": "true",
     "RunOnceActivity.ShowReadmeOnStart": "true",
     "RunOnceActivity.git.unshallow": "true",
-    "git-widget-placeholder": "master",
+    "git-widget-placeholder": "feature/documents",
     "last_opened_file_path": "/home/smau/Desktop/FII/Anul 2/Practica Sisteme Gestiune Baze de Date/sgbd/backend/digital-archive-api",
     "node.js.detected.package.eslint": "true",
     "node.js.detected.package.tslint": "true",
@@ -84,12 +80,109 @@
   }
 }]]></component>
   <component name="RunManager">
+    <configuration default="true" type="JetRunConfigurationType">
+      <module name="sgbd" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration default="true" type="KotlinStandaloneScriptRunConfigurationType">
+      <module name="sgbd" />
+      <option name="filePath" />
+      <method v="2" />
+    </configuration>
+    <configuration default="true" type="PythonConfigurationType" factoryName="Python">
+      <module name="sgbd" />
+      <option name="ENV_FILES" value="" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="" />
+      <option name="IS_MODULE_SDK" value="false" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
+      <option name="SCRIPT_NAME" value="" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="false" />
+      <option name="REDIRECT_INPUT" value="false" />
+      <option name="INPUT_FILE" value="" />
+      <method v="2" />
+    </configuration>
+    <configuration default="true" type="Python.FlaskServer">
+      <module name="sgbd" />
+      <option name="ENV_FILES" value="" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="" />
+      <option name="IS_MODULE_SDK" value="false" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
+      <option name="launchJavascriptDebuger" value="false" />
+      <method v="2" />
+    </configuration>
     <configuration name="DigitalArchiveApiApplication" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot" nameIsGenerated="true">
       <module name="digital-archive-api" />
       <option name="SPRING_BOOT_MAIN_CLASS" value="com.arhiva_digitala.digital_archive_api.DigitalArchiveApiApplication" />
       <method v="2">
         <option name="Make" enabled="true" />
       </method>
+    </configuration>
+    <configuration default="true" type="Tox" factoryName="Tox">
+      <module name="sgbd" />
+      <option name="ENV_FILES" value="" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="" />
+      <option name="IS_MODULE_SDK" value="false" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
+      <method v="2" />
+    </configuration>
+    <configuration default="true" type="tests" factoryName="Autodetect">
+      <module name="sgbd" />
+      <option name="ENV_FILES" value="" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="" />
+      <option name="IS_MODULE_SDK" value="false" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
+      <option name="_new_additionalArguments" value="&quot;&quot;" />
+      <option name="_new_target" value="&quot;&quot;" />
+      <option name="_new_targetType" value="&quot;PATH&quot;" />
+      <method v="2" />
+    </configuration>
+    <configuration default="true" type="tests" factoryName="Doctests">
+      <module name="sgbd" />
+      <option name="ENV_FILES" value="" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="" />
+      <option name="IS_MODULE_SDK" value="false" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
+      <option name="SCRIPT_NAME" value="" />
+      <option name="CLASS_NAME" value="" />
+      <option name="METHOD_NAME" value="" />
+      <option name="FOLDER_NAME" value="" />
+      <option name="TEST_TYPE" value="TEST_SCRIPT" />
+      <option name="PATTERN" value="" />
+      <option name="USE_PATTERN" value="false" />
+      <method v="2" />
     </configuration>
   </component>
   <component name="SharedIndexes">
@@ -118,5 +211,9 @@
   </component>
   <component name="TypeScriptGeneratedFilesManager">
     <option name="version" value="3" />
+  </component>
+  <component name="XSLT-Support.FileAssociations.UIState">
+    <expand />
+    <select />
   </component>
 </project>

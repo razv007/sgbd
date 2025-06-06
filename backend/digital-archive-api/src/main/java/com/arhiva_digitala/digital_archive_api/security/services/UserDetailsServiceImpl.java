@@ -11,6 +11,8 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.arhiva_digitala.digital_archive_api.security.UserPrincipal;
+
 @Service
 public class UserDetailsServiceImpl implements UserDetailsService {
     private static final Logger logger = LoggerFactory.getLogger(UserDetailsServiceImpl.class);
@@ -29,6 +31,8 @@ public class UserDetailsServiceImpl implements UserDetailsService {
         });
         logger.info("User found: {}. Building UserDetails.", username);
 
-        return UserDetailsImpl.build(utilizator);
+        UserDetails userDetailsToReturn = UserPrincipal.create(utilizator);
+        logger.info("UserDetailsServiceImpl: Returning UserDetails of type: {} for user: {}", userDetailsToReturn.getClass().getName(), username);
+        return userDetailsToReturn;
     }
 }

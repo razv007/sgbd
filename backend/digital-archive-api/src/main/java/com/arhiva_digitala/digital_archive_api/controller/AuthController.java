@@ -4,6 +4,7 @@ import com.arhiva_digitala.digital_archive_api.dto.JwtResponse;
 import com.arhiva_digitala.digital_archive_api.dto.LoginRequest;
 import com.arhiva_digitala.digital_archive_api.model.Utilizator;
 import com.arhiva_digitala.digital_archive_api.security.jwt.JwtUtils;
+import com.arhiva_digitala.digital_archive_api.security.UserPrincipal;
 import com.arhiva_digitala.digital_archive_api.security.services.UserDetailsImpl;
 import com.arhiva_digitala.digital_archive_api.service.AuthService;
 import jakarta.validation.Valid;
@@ -60,32 +61,25 @@ public class AuthController {
         SecurityContextHolder.getContext().setAuthentication(authentication);
         String jwt = jwtUtils.generateJwtToken(authentication);
 
-        UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
-        // String rol = userDetails.getAuthorities().stream()
-        //        .map(GrantedAuthority::getAuthority)
-        //        .findFirst()
-        //        .orElse(null); // Assuming single role, adjust if multiple roles are possible
-        // Simplification: Assuming getRol() exists on UserDetailsImpl or we get it from the Utilizator entity if needed
-        // For now, let's assume the UserDetailsImpl has a direct way to get the role string if it was set during build.
-        // If not, we would fetch the Utilizator entity again or ensure UserDetailsImpl stores it.
-        // The JwtResponse constructor expects a role string.
+        UserPrincipal userPrincipal = (UserPrincipal) authentication.getPrincipal();
 
-        // Let's retrieve the role from UserDetailsImpl's authorities
-        List<String> roles = userDetails.getAuthorities().stream()
+        // Retrieve roles from UserPrincipal's authorities
+        List<String> roles = userPrincipal.getAuthorities().stream()
                 .map(GrantedAuthority::getAuthority)
                 .collect(Collectors.toList());
         // Assuming the first role is the primary one, or adjust logic if multiple roles are handled differently
         String userRole = roles.isEmpty() ? null : roles.get(0);
 
-        // Preluare dataNastere
-        Utilizator utilizator = authService.getUtilizatorByNumeUtilizator(userDetails.getUsername());
-        LocalDate dataNastere = utilizator.getDataNastere();
+        // dataNastere is directly available in UserPrincipal
+        LocalDate dataNastere = userPrincipal.getDataNastere(); // Ensure UserPrincipal has this method and it returns LocalDate
+        String numeComplet = userPrincipal.getNumeComplet(); // Assuming UserPrincipal has getNumeComplet()
 
         return ResponseEntity.ok(new JwtResponse(jwt,
-                userDetails.getId(),
-                userDetails.getUsername(),
-                userDetails.getEmail(),
+                userPrincipal.getId(),
+                userPrincipal.getUsername(), // This is UserDetails.getUsername(), maps to UserPrincipal.numeUtilizator
+                userPrincipal.getEmail(),
                 userRole,
-                dataNastere));
+                dataNastere,
+                numeComplet));
     }
 }

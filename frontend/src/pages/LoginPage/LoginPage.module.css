@@ -1,92 +1,103 @@
-.loginForm {
-	background: white;
-	padding: 40px 50px; /* Increase horizontal padding */
-	border-radius: 8px;
-	box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-	width: 100%;
-	max-width: 400px;
-	text-align: center;
+/* LoginPage.module.css - Aligned with the new modern theme */
+.container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  background-color: #f4f6f8; /* Consistent light grey background */
+  padding: 20px;
+  font-family: "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
 }
 
-.appTitle {
-	font-size: 32px;
-	color: #007bff; /* Blue color for the app title */
-	margin-bottom: 10px;
-	font-weight: bold;
+.formWrapper { /* This replaces the old .loginForm for the white box */
+  background: #ffffff;
+  padding: 35px 40px;
+  border-radius: 6px;
+  box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
+  width: 100%;
+  max-width: 420px;
+  text-align: center;
 }
 
-.loginForm h2 {
-	margin-top: 0px; /* Reduce top margin for 'Login' subtitle */
-	margin-bottom: 30px; /* Increase bottom margin for 'Login' subtitle */
-	color: #333;
-	font-size: 24px;
+.formWrapper h2 {
+  margin-bottom: 28px;
+  color: #2c3e50;
+  font-size: 2rem;
+  font-weight: 600;
 }
 
 .inputGroup {
-	margin-bottom: 20px;
-	text-align: left;
+  margin-bottom: 22px;
+  text-align: left;
 }
 
 .inputGroup label {
-	display: block;
-	margin-bottom: 8px;
-	color: #555;
-	font-weight: bold;
+  display: block;
+  margin-bottom: 8px;
+  color: #555e68;
+  font-weight: 500;
+  font-size: 0.9rem;
 }
 
 .inputGroup input {
-	width: 100%;
-	padding: 12px;
-	border: 1px solid #ccc;
-	border-radius: 4px;
-	box-sizing: border-box;
-	font-size: 16px;
+  width: 100%;
+  padding: 12px 14px;
+  border: 1px solid #bdc3c7;
+  border-radius: 4px;
+  box-sizing: border-box;
+  font-size: 1rem;
+  color: #34495e;
+  transition: border-color 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
 }
 
 .inputGroup input:focus {
-	border-color: #007bff;
-	outline: none;
-	box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
+  border-color: #3498db;
+  outline: 0;
+  box-shadow: 0 0 0 0.2rem rgba(52, 152, 219, 0.25);
 }
 
 .button {
-	width: 100%;
-	padding: 12px;
-	background-color: #007bff;
-	color: white;
-	border: none;
-	border-radius: 4px;
-	cursor: pointer;
-	font-size: 16px;
-	font-weight: bold;
-	transition: background-color 0.3s ease;
+  width: 100%;
+  padding: 12px 20px;
+  background-color: #3498db;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 1rem;
+  font-weight: 500;
+  transition: background-color 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
 }
 
 .button:hover {
-	background-color: #0056b3;
+  background-color: #2980b9;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.12);
 }
 
-.button:disabled {
-	background-color: #ccc;
-	cursor: not-allowed;
-}
-
-.error {
-	color: red;
-	margin-top: 10px;
-	font-size: 0.9em;
-	text-align: center;
+.errorMessage {
+  background-color: #ffebee;
+  color: #c62828;
+  border: 1px solid #ef9a9a;
+  padding: 12px 15px;
+  margin-bottom: 20px;
+  border-radius: 4px;
+  font-size: 0.95rem;
+  text-align: center;
 }
 
 .link {
-	display: block; /* Make it a block to center it easily */
-	text-align: center;
-	margin-top: 20px;
-	color: #007bff;
-	text-decoration: none;
-	font-size: 0.9em;
+  display: block;
+  margin-top: 25px;
+  color: #3498db;
+  text-decoration: none;
+  font-size: 0.9rem;
+  font-weight: 500;
 }
 
 .link:hover {
-	text-decoration: underline;
+  text-decoration: underline;
+  color: #2980b9;
 }
