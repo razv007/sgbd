@@ -4,6 +4,7 @@ import styles from "./HomePage.module.scss";
 import { Link } from "react-router-dom"; // Importă Link pentru navigare // We'll create this CSS module next
 import Modal from "../../components/Modal/Modal"; // Importă componenta Modal
 import UserProfileForm from "../../components/UserProfileForm/UserProfileForm"; // Importă formularul de profil
+import axios from "axios";
 
 interface CurrentUser {
 	id: number;
@@ -145,27 +146,45 @@ const HomePage: React.FC = () => {
 								/>
 								<button
 									onClick={async () => {
-										try {
-											const res = await fetch(
-												`http://localhost:8081/api/utilizatori/validate?username=${encodeURIComponent(
-													search
-												)}`
+										const token =
+											localStorage.getItem("userToken");
+										if (!token) {
+											alert(
+												"Trebuie să fiți autentificat pentru a căuta utilizatori."
 											);
-											if (res.ok) {
-												navigate(`/timeline/${search}`);
-											} else {
-												alert(
-													"Utilizatorul nu există."
-												);
-											}
-										} catch (err) {
+											return;
+										}
+
+										try {
+											await axios.get(
+												`http://localhost:8081/api/utilizatori/validate`,
+												{
+													params: {
+														username: search,
+													},
+													headers: {
+														Authorization: `Bearer ${token}`,
+													},
+												}
+											);
+											navigate(`/timeline/${search}`);
+										} catch (err: any) {
 											console.error(
 												"Eroare la validare:",
 												err
 											);
-											alert(
-												"A apărut o eroare. Încearcă din nou."
-											);
+											if (
+												err.response &&
+												err.response.status === 404
+											) {
+												alert(
+													"Utilizatorul nu există."
+												);
+											} else {
+												alert(
+													"A apărut o eroare. Încearcă din nou."
+												);
+											}
 										}
 									}}
 									disabled={!search}

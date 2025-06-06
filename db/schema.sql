@@ -135,160 +135,218 @@ begin
 end;
 /
 
-    
-CREATE OR REPLACE TRIGGER trg_update_evenimente
-AFTER INSERT ON Documente
-FOR EACH ROW
-BEGIN
-    UPDATE Evenimente
-    SET data_ultima_modificare = SYSTIMESTAMP
-    WHERE eveniment_id = :NEW.eveniment_id;
-END;
+
+create or replace trigger trg_update_evenimente after
+   insert on documente
+   for each row
+begin
+   update evenimente
+      set
+      data_ultima_modificare = systimestamp
+    where eveniment_id = :new.eveniment_id;
+end;
 /
+
+-- CREATE OR REPLACE TRIGGER trg_delete_event_if_no_participants
+-- AFTER DELETE ON Participari
+-- FOR EACH ROW
+-- DECLARE
+--     v_count NUMBER;
+-- BEGIN
+--     -- Count remaining participants for the event
+--     SELECT COUNT(*) INTO v_count
+--     FROM Participari
+--     WHERE eveniment_id = :OLD.eveniment_id;
+
+--     -- If none are left, delete the event
+--     IF v_count = 0 THEN
+--         DELETE FROM Evenimente WHERE eveniment_id = :OLD.eveniment_id;
+--     END IF;
+-- END;
+-- /
 
 -- =============================================================================
 -- USER SIMILARITY FUNCTION
 -- =============================================================================
-CREATE OR REPLACE FUNCTION FN_CALC_USER_SIMILARITY (
-    p_username1 IN UTILIZATORI.NUME_UTILIZATOR%TYPE,
-    p_username2 IN UTILIZATORI.NUME_UTILIZATOR%TYPE
-) RETURN NUMBER
-IS
-    v_user_id1 UTILIZATORI.UTILIZATOR_ID%TYPE;
-    v_user_id2 UTILIZATORI.UTILIZATOR_ID%TYPE;
+create or replace function fn_calc_user_similarity (
+   p_username1 in utilizatori.nume_utilizator%type,
+   p_username2 in utilizatori.nume_utilizator%type
+) return number is
+   v_user_id1                   utilizatori.utilizator_id%type;
+   v_user_id2                   utilizatori.utilizator_id%type;
 
     -- Scores for each criterion
-    v_common_events_score NUMBER := 0;
-    v_u1_attends_u2_event_score NUMBER := 0;
-    v_u2_attends_u1_event_score NUMBER := 0;
-    v_shared_creator_score NUMBER := 0;
-    v_common_locations_score NUMBER := 0;
-    v_age_similarity_score NUMBER := 0;
-
-    v_total_similarity NUMBER := 0;
+   v_common_events_score        number := 0;
+   v_u1_attends_u2_event_score  number := 0;
+   v_u2_attends_u1_event_score  number := 0;
+   v_shared_creator_score       number := 0;
+   v_common_locations_score     number := 0;
+   v_age_similarity_score       number := 0;
+   v_total_similarity           number := 0;
 
     -- Weights
-    K_COMMON_EVENTS_WEIGHT CONSTANT NUMBER := 10;
-    K_U1_ATTENDS_U2_EVENT_WEIGHT CONSTANT NUMBER := 7;
-    K_U2_ATTENDS_U1_EVENT_WEIGHT CONSTANT NUMBER := 7;
-    K_SHARED_CREATOR_WEIGHT CONSTANT NUMBER := 3;
-    K_COMMON_LOCATIONS_WEIGHT CONSTANT NUMBER := 5;
-    K_AGE_SIMILARITY_WEIGHT CONSTANT NUMBER := 4;
+   k_common_events_weight       constant number := 10;
+   k_u1_attends_u2_event_weight constant number := 7;
+   k_u2_attends_u1_event_weight constant number := 7;
+   k_shared_creator_weight      constant number := 3;
+   k_common_locations_weight    constant number := 5;
+   k_age_similarity_weight      constant number := 4;
 
     -- Age variables
-    v_birth_date1 UTILIZATORI.DATA_NASTERE%TYPE;
-    v_birth_date2 UTILIZATORI.DATA_NASTERE%TYPE;
-    v_age1 NUMBER;
-    v_age2 NUMBER;
-    v_age_difference NUMBER;
-
-BEGIN
+   v_birth_date1                utilizatori.data_nastere%type;
+   v_birth_date2                utilizatori.data_nastere%type;
+   v_age1                       number;
+   v_age2                       number;
+   v_age_difference             number;
+begin
     -- Convert usernames to IDs
-    SELECT utilizator_id INTO v_user_id1 FROM utilizatori WHERE nume_utilizator = p_username1;
-    SELECT utilizator_id INTO v_user_id2 FROM utilizatori WHERE nume_utilizator = p_username2;
+   select utilizator_id
+     into v_user_id1
+     from utilizatori
+    where nume_utilizator = p_username1;
+   select utilizator_id
+     into v_user_id2
+     from utilizatori
+    where nume_utilizator = p_username2;
 
-    IF v_user_id1 = v_user_id2 THEN
-        RETURN 0;
-    END IF;
+   if v_user_id1 = v_user_id2 then
+      return 0;
+   end if;
 
     -- Same logic as before (only variable names changed)
     -- CRITERION 1: Common Participated Events
-    BEGIN
-        SELECT COUNT(DISTINCT p1.eveniment_id) * K_COMMON_EVENTS_WEIGHT
-        INTO v_common_events_score
-        FROM Participari p1
-        JOIN Participari p2 ON p1.eveniment_id = p2.eveniment_id
-        WHERE p1.utilizator_id = v_user_id1
-          AND p2.utilizator_id = v_user_id2;
-    EXCEPTION WHEN OTHERS THEN v_common_events_score := 0;
-    END;
+   begin
+      select count(distinct p1.eveniment_id) * k_common_events_weight
+        into v_common_events_score
+        from participari p1
+        join participari p2
+      on p1.eveniment_id = p2.eveniment_id
+       where p1.utilizator_id = v_user_id1
+         and p2.utilizator_id = v_user_id2;
+   exception
+      when others then
+         v_common_events_score := 0;
+   end;
 
     -- CRITERION 2: User1 Participated in Events Created by User2
-    BEGIN
-        SELECT COUNT(DISTINCT p.eveniment_id) * K_U1_ATTENDS_U2_EVENT_WEIGHT
-        INTO v_u1_attends_u2_event_score
-        FROM Participari p
-        JOIN Evenimente e ON p.eveniment_id = e.eveniment_id
-        WHERE p.utilizator_id = v_user_id1
-          AND e.nume_utilizator = p_username2;
-    EXCEPTION WHEN OTHERS THEN v_u1_attends_u2_event_score := 0;
-    END;
+   begin
+      select count(distinct p.eveniment_id) * k_u1_attends_u2_event_weight
+        into v_u1_attends_u2_event_score
+        from participari p
+        join evenimente e
+      on p.eveniment_id = e.eveniment_id
+       where p.utilizator_id = v_user_id1
+         and e.nume_utilizator = p_username2;
+   exception
+      when others then
+         v_u1_attends_u2_event_score := 0;
+   end;
 
     -- CRITERION 3: User2 Participated in Events Created by User1
-    BEGIN
-        SELECT COUNT(DISTINCT p.eveniment_id) * K_U2_ATTENDS_U1_EVENT_WEIGHT
-        INTO v_u2_attends_u1_event_score
-        FROM Participari p
-        JOIN Evenimente e ON p.eveniment_id = e.eveniment_id
-        WHERE p.utilizator_id = v_user_id2
-          AND e.nume_utilizator = p_username1;
-    EXCEPTION WHEN OTHERS THEN v_u2_attends_u1_event_score := 0;
-    END;
+   begin
+      select count(distinct p.eveniment_id) * k_u2_attends_u1_event_weight
+        into v_u2_attends_u1_event_score
+        from participari p
+        join evenimente e
+      on p.eveniment_id = e.eveniment_id
+       where p.utilizator_id = v_user_id2
+         and e.nume_utilizator = p_username1;
+   exception
+      when others then
+         v_u2_attends_u1_event_score := 0;
+   end;
 
     -- CRITERION 4: Shared Third-Party Creators
-    BEGIN
-        SELECT COUNT(DISTINCT e.nume_utilizator) * K_SHARED_CREATOR_WEIGHT
-        INTO v_shared_creator_score
-        FROM Evenimente e
-        JOIN Participari p1 ON e.eveniment_id = p1.eveniment_id AND p1.utilizator_id = v_user_id1
-        JOIN Participari p2 ON e.eveniment_id = p2.eveniment_id AND p2.utilizator_id = v_user_id2
-        WHERE e.nume_utilizator NOT IN (p_username1, p_username2);
-    EXCEPTION WHEN OTHERS THEN v_shared_creator_score := 0;
-    END;
+   begin
+      select count(distinct e.nume_utilizator) * k_shared_creator_weight
+        into v_shared_creator_score
+        from evenimente e
+        join participari p1
+      on e.eveniment_id = p1.eveniment_id
+         and p1.utilizator_id = v_user_id1
+        join participari p2
+      on e.eveniment_id = p2.eveniment_id
+         and p2.utilizator_id = v_user_id2
+       where e.nume_utilizator not in ( p_username1,
+                                        p_username2 );
+   exception
+      when others then
+         v_shared_creator_score := 0;
+   end;
 
     -- CRITERION 5: Common Event Locations
-    BEGIN
-        SELECT COUNT(DISTINCT loc1.locatie) * K_COMMON_LOCATIONS_WEIGHT
-        INTO v_common_locations_score
-        FROM
-            (SELECT DISTINCT e.locatie
-             FROM Evenimente e
-             JOIN Participari p ON e.eveniment_id = p.eveniment_id
-             WHERE p.utilizator_id = v_user_id1 AND e.locatie IS NOT NULL) loc1
-        JOIN
-            (SELECT DISTINCT e.locatie
-             FROM Evenimente e
-             JOIN Participari p ON e.eveniment_id = p.eveniment_id
-             WHERE p.utilizator_id = v_user_id2 AND e.locatie IS NOT NULL) loc2
-        ON loc1.locatie = loc2.locatie;
-    EXCEPTION WHEN OTHERS THEN v_common_locations_score := 0;
-    END;
+   begin
+      select count(distinct loc1.locatie) * k_common_locations_weight
+        into v_common_locations_score
+        from (
+         select distinct e.locatie
+           from evenimente e
+           join participari p
+         on e.eveniment_id = p.eveniment_id
+          where p.utilizator_id = v_user_id1
+            and e.locatie is not null
+      ) loc1
+        join (
+         select distinct e.locatie
+           from evenimente e
+           join participari p
+         on e.eveniment_id = p.eveniment_id
+          where p.utilizator_id = v_user_id2
+            and e.locatie is not null
+      ) loc2
+      on loc1.locatie = loc2.locatie;
+   exception
+      when others then
+         v_common_locations_score := 0;
+   end;
 
     -- CRITERION 6: Age Similarity
-    BEGIN
-        SELECT data_nastere INTO v_birth_date1 FROM utilizatori WHERE utilizator_id = v_user_id1;
-        SELECT data_nastere INTO v_birth_date2 FROM utilizatori WHERE utilizator_id = v_user_id2;
+   begin
+      select data_nastere
+        into v_birth_date1
+        from utilizatori
+       where utilizator_id = v_user_id1;
+      select data_nastere
+        into v_birth_date2
+        from utilizatori
+       where utilizator_id = v_user_id2;
 
-        IF v_birth_date1 IS NOT NULL AND v_birth_date2 IS NOT NULL THEN
-            v_age1 := TRUNC(MONTHS_BETWEEN(SYSDATE, v_birth_date1) / 12);
-            v_age2 := TRUNC(MONTHS_BETWEEN(SYSDATE, v_birth_date2) / 12);
-            v_age_difference := ABS(v_age1 - v_age2);
-
-            IF v_age_difference <= 5 THEN
-                v_age_similarity_score := K_AGE_SIMILARITY_WEIGHT;
-            ELSIF v_age_difference <= 10 THEN
-                v_age_similarity_score := K_AGE_SIMILARITY_WEIGHT * 0.5;
-            ELSE
-                v_age_similarity_score := K_AGE_SIMILARITY_WEIGHT * 0.1;
-            END IF;
-        ELSE
-            v_age_similarity_score := 0;
-        END IF;
-    EXCEPTION WHEN OTHERS THEN v_age_similarity_score := 0;
-    END;
+      if
+         v_birth_date1 is not null
+         and v_birth_date2 is not null
+      then
+         v_age1 := trunc(months_between(
+            sysdate,
+            v_birth_date1
+         ) / 12);
+         v_age2 := trunc(months_between(
+            sysdate,
+            v_birth_date2
+         ) / 12);
+         v_age_difference := abs(v_age1 - v_age2);
+         if v_age_difference <= 5 then
+            v_age_similarity_score := k_age_similarity_weight;
+         elsif v_age_difference <= 10 then
+            v_age_similarity_score := k_age_similarity_weight * 0.5;
+         else
+            v_age_similarity_score := k_age_similarity_weight * 0.1;
+         end if;
+      else
+         v_age_similarity_score := 0;
+      end if;
+   exception
+      when others then
+         v_age_similarity_score := 0;
+   end;
 
     -- Final score
-    v_total_similarity := v_common_events_score +
-                          v_u1_attends_u2_event_score +
-                          v_u2_attends_u1_event_score +
-                          v_shared_creator_score +
-                          v_common_locations_score +
-                          v_age_similarity_score;
-
-    RETURN v_total_similarity;
-
-EXCEPTION
-    WHEN OTHERS THEN
-        RETURN 0;
-END FN_CALC_USER_SIMILARITY;
+   v_total_similarity := v_common_events_score + v_u1_attends_u2_event_score + v_u2_attends_u1_event_score + v_shared_creator_score
+   + v_common_locations_score + v_age_similarity_score;
+   return v_total_similarity;
+exception
+   when others then
+      return 0;
+end fn_calc_user_similarity;
 /
+
+select fn_calc_user_similarity('Razv007', 'User') from dual;
