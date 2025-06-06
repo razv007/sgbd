@@ -1,4 +1,5 @@
 import React, { useState, useRef, useEffect } from "react";
+import axios from "axios";
 import styles from "./DocumentManager.module.scss";
 
 interface Props {
@@ -22,29 +23,20 @@ const DocumentManager: React.FC<Props> = ({ eventId }) => {
 			formData.append("eventId", String(eventId));
 
 			const token = localStorage.getItem("userToken");
-			console.log(token);
 
-			const response = await fetch(
+			const response = await axios.post<DocumentEntry>(
 				"http://localhost:8081/api/documents/upload",
+				formData,
 				{
-					method: "POST",
 					headers: {
-						Authorization: `Bearer ${token || ""}`, // Important!
+						Authorization: `Bearer ${token || ""}`,
+						"Content-Type": "multipart/form-data",
 					},
-					body: formData,
 				}
 			);
 
-			if (!response.ok) {
-				const err = await response.text();
-				throw new Error(err);
-			}
-
-			console.log(response);
-
-			const savedDoc: DocumentEntry = await response.json();
-			setDocuments((prev) => [...prev, savedDoc]);
-		} catch (error) {
+			setDocuments((prev) => [...prev, response.data]);
+		} catch (error: any) {
 			console.error("Upload failed:", error);
 			alert("Eroare la încărcarea documentului.");
 		}
@@ -54,22 +46,17 @@ const DocumentManager: React.FC<Props> = ({ eventId }) => {
 		try {
 			const token = localStorage.getItem("userToken");
 
-			const response = await fetch(
+			await axios.delete(
 				`http://localhost:8081/api/documents/${docId}`,
 				{
-					method: "DELETE",
 					headers: {
 						Authorization: `Bearer ${token || ""}`,
 					},
 				}
 			);
 
-			if (!response.ok) {
-				throw new Error("Failed to delete document.");
-			}
-
 			setDocuments((prev) => prev.filter((d) => d.id !== docId));
-		} catch (error) {
+		} catch (error: any) {
 			console.error("Delete failed:", error);
 			alert("Eroare la ștergerea documentului.");
 		}
@@ -97,21 +84,19 @@ const DocumentManager: React.FC<Props> = ({ eventId }) => {
 			try {
 				const token = localStorage.getItem("userToken");
 
-				const response = await fetch(
-					`http://localhost:8081/api/documents?eventId=${eventId}`,
+				const response = await axios.get<DocumentEntry[]>(
+					`http://localhost:8081/api/documents`,
 					{
+						params: { eventId },
 						headers: {
 							Authorization: `Bearer ${token || ""}`,
 						},
 					}
 				);
 
-				if (!response.ok) throw new Error("Failed to load documents");
-
-				const data: DocumentEntry[] = await response.json();
-				setDocuments(data);
-			} catch (err) {
-				console.error("Fetch error:", err);
+				setDocuments(response.data);
+			} catch (error: any) {
+				console.error("Fetch error:", error);
 				alert("Eroare la încărcarea documentelor.");
 			}
 		};

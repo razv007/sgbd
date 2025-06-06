@@ -46,8 +46,8 @@ public class EvenimentController {
         evenimentToCreate.setVizibilitate(evenimentDto.getVizibilitate());
         // Utilizatorul va fi setat în serviciu
 
-        Eveniment createdEveniment = evenimentService.createEveniment(evenimentToCreate, username);
-        return new ResponseEntity<>(createdEveniment, HttpStatus.CREATED);
+        Eveniment created = evenimentService.createEveniment(evenimentToCreate, username, evenimentDto.getParticipanti());
+        return new ResponseEntity<>(created, HttpStatus.CREATED);
     }
 
     @GetMapping

@@ -7,12 +7,14 @@ interface TimelineEventProps {
 	event: Eveniment;
 	sideClass: "left" | "right" | "";
 	isOnAxis: boolean;
+	onDelete?: (eventId: number) => void;
 }
 
 const TimelineEvent: React.FC<TimelineEventProps> = ({
 	event,
 	sideClass,
 	isOnAxis,
+	onDelete
 }) => {
 	const formatDateTime = (
 		dateString: string,
@@ -70,6 +72,16 @@ const TimelineEvent: React.FC<TimelineEventProps> = ({
 								? "Nicio descriere adăugată."
 								: "")}
 					</p>
+					{event.type === "event" && onDelete && (
+						<button
+							className={styles.deleteButton}
+							onClick={() => onDelete(Number(event.id))}
+							title="Șterge eveniment"
+						>
+							🗑️
+						</button>
+					)}
+
 					{event.type === "event" && (
 						<>
 							<p className={styles.eventDate}>

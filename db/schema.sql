@@ -121,3 +121,22 @@ BEGIN
     WHERE eveniment_id = :NEW.eveniment_id;
 END;
 /
+
+
+-- CREATE OR REPLACE TRIGGER trg_delete_event_if_no_participants
+-- AFTER DELETE ON Participari
+-- FOR EACH ROW
+-- DECLARE
+--     v_count NUMBER;
+-- BEGIN
+--     -- Count remaining participants for the event
+--     SELECT COUNT(*) INTO v_count
+--     FROM Participari
+--     WHERE eveniment_id = :OLD.eveniment_id;
+
+--     -- If none are left, delete the event
+--     IF v_count = 0 THEN
+--         DELETE FROM Evenimente WHERE eveniment_id = :OLD.eveniment_id;
+--     END IF;
+-- END;
+-- /

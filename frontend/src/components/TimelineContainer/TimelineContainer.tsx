@@ -2,6 +2,7 @@ import React, { useMemo } from "react";
 import { type Eveniment } from "../../types/eveniment";
 import TimelineEvent from "../TimelineEvent/TimelineEvent";
 import styles from "./TimelineContainer.module.scss";
+import axios from "axios";
 
 interface TimelineContainerProps {
 	evenimente: Eveniment[];
@@ -48,6 +49,24 @@ const TimelineContainer: React.FC<TimelineContainerProps> = ({
 		return items;
 	}, [evenimente, birthDate, currentDateISO]);
 
+	const handleDeleteEvent = async (eventId: number) => {
+		const token = localStorage.getItem("userToken");
+		try {
+			await axios.delete(
+				`http://localhost:8081/api/evenimente/${eventId}`,
+				{
+					headers: {
+						Authorization: `Bearer ${token}`,
+					},
+				}
+			);
+			// Refresh list (re-fetch or filter locally)
+			window.location.reload(); // quick fix, or lift `fetchEvenimente` up
+		} catch (error) {
+			console.error("Eroare la ștergere:", error);
+		}
+	};
+
 	const sortedTimelineItems = useMemo(() => {
 		return allDisplayableItems
 			.sort(
@@ -77,6 +96,7 @@ const TimelineContainer: React.FC<TimelineContainerProps> = ({
 						event={item}
 						sideClass={sideClass as "" | "left" | "right"}
 						isOnAxis={isOnAxis}
+						onDelete={handleDeleteEvent}
 					/>
 				);
 			});
@@ -85,7 +105,9 @@ const TimelineContainer: React.FC<TimelineContainerProps> = ({
 	if (loading && sortedTimelineItems.length === 0) {
 		return (
 			<div className={styles.verticalTimelineContainer}>
-				<p className={styles.loadingMessage}>Se încarcă evenimentele...</p>
+				<p className={styles.loadingMessage}>
+					Se încarcă evenimentele...
+				</p>
 			</div>
 		);
 	}
