@@ -7,7 +7,8 @@ export interface Eveniment {
 	locatie?: string;
 	categorie?: string;
 	vizibilitate?: string;
-	numeUtilizator?: string; // 👈 add this
+	numeUtilizator?: string;
+	dataUltimaModificare?: string;
 	type?: "birth" | "today" | "event";
 }
 
@@ -20,5 +21,5 @@ export interface EvenimentFormData {
 	dataSfarsit: string;
 	locatie: string;
 	categorie: string;
-	vizibilitate: "PRIVAT" | "PRIETENI" | "PUBLIC";
+	vizibilitate: "PRIVAT" | "PUBLIC";
 }

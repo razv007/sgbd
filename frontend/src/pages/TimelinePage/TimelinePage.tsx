@@ -110,7 +110,7 @@ const TimelinePage: React.FC = () => {
 	return (
 		<div className={styles.timelinePageContainer}>
 			<div className={styles.topBar}>
-				<h1 className={styles.title}>Timeline Personal</h1>
+				<h1 className={styles.title}>Timeline-ul lui {username}</h1>
 				<button
 					onClick={() => navigate("/")}
 					className={styles.actionButton}

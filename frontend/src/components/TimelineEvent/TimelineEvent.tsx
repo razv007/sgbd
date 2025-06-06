@@ -70,7 +70,12 @@ const TimelineEvent: React.FC<TimelineEventProps> = ({
 					<strong>{event.titlu}</strong>
 					{event.numeUtilizator && (
 						<p className={styles.eventOwner}>
-							<em>by {event.numeUtilizator === username ? 'you' : event.numeUtilizator }</em>
+							<em>
+								by{" "}
+								{event.numeUtilizator === username
+									? "you"
+									: event.numeUtilizator}
+							</em>
 						</p>
 					)}
 
@@ -105,6 +110,12 @@ const TimelineEvent: React.FC<TimelineEventProps> = ({
 									)}
 								</p>
 							)}
+							{event.dataUltimaModificare && (
+								<p className={styles.eventModified}>
+									<strong>Ultima modificare:</strong>{" "}
+									{formatDateTime(event.dataUltimaModificare)}
+								</p>
+							)}
 							{event.locatie && (
 								<p className={styles.eventLocation}>
 									<strong>Locație:</strong> {event.locatie}
@@ -118,6 +129,7 @@ const TimelineEvent: React.FC<TimelineEventProps> = ({
 							)}
 						</>
 					)}
+
 					{event.type === "event" && (
 						<div className={styles.eventArtifacts}>
 							<DocumentManager eventId={event.id} />

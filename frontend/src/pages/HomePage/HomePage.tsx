@@ -178,11 +178,54 @@ const HomePage: React.FC = () => {
 							<div className={styles.buttonGroup}>
 								<button
 									className={styles.actionButton}
-									onClick={() =>
-										alert(
-											"Funcționalitate în curs de implementare."
-										)
-									}
+									onClick={async () => {
+										const token =
+											localStorage.getItem("userToken");
+										if (!token) {
+											navigate("/login");
+											return;
+										}
+
+										try {
+											const response = await fetch(
+												"http://localhost:8081/api/users/recommendations?count=1",
+												{
+													headers: {
+														Authorization: `Bearer ${token}`,
+													},
+												}
+											);
+
+											if (response.ok) {
+												const data =
+													await response.json();
+												if (
+													data.length > 0 &&
+													data[0].numeUtilizator
+												) {
+													navigate(
+														`/timeline/${data[0].numeUtilizator}`
+													);
+												} else {
+													alert(
+														"Nu a fost găsit niciun utilizator recomandat."
+													);
+												}
+											} else {
+												alert(
+													"Eroare la obținerea recomandărilor."
+												);
+											}
+										} catch (error) {
+											console.error(
+												"Eroare la sugestia de timeline:",
+												error
+											);
+											alert(
+												"A apărut o eroare. Încearcă din nou."
+											);
+										}
+									}}
 								>
 									Sugerează Timeline
 								</button>

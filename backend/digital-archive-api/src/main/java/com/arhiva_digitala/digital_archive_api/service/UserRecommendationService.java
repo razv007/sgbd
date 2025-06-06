@@ -9,10 +9,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -37,6 +34,12 @@ public class UserRecommendationService {
         List<Utilizator> allUsers = userRepository.findAll();
         logger.debug("Retrieved {} total users from database for potential recommendations.", allUsers.size());
         List<UserDto> recommendedUsers = new ArrayList<>();
+        Optional<Utilizator> currentUser = userRepository.findById(currentUserId);
+        if (!currentUser.isPresent()) {
+            return Collections.emptyList(); // Dacă utilizatorul curent nu există, returnăm o listă goală
+        }
+
+        String currentUsername = currentUser.get().getNumeUtilizator();
 
         for (Utilizator potentialRecommendation : allUsers) {
             if (potentialRecommendation.getId().equals(currentUserId)) {
@@ -47,7 +50,7 @@ public class UserRecommendationService {
             Double similarityScore = null;
             try {
                 logger.trace("Calculating similarity between user {} and user {}", currentUserId, potentialRecommendation.getId());
-                similarityScore = userRepository.calculateSimilarityScore(currentUserId, potentialRecommendation.getId());
+                similarityScore = userRepository.calculateSimilarityScore(currentUsername, potentialRecommendation.getNumeUtilizator());
             } catch (Exception e) {
                 logger.error("Error calculating similarity score between user {} and user {}: {}",
                         currentUserId, potentialRecommendation.getId(), e.getMessage(), e);

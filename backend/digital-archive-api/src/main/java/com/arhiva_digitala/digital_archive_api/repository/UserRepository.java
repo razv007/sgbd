@@ -12,9 +12,6 @@ import java.util.Optional;
 public interface UserRepository extends JpaRepository<Utilizator, Long> {
     Optional<Utilizator> findByNumeUtilizator(String numeUtilizator);
 
-    @Query(value = "SELECT FN_CALC_USER_SIMILARITY(:userId1, :userId2) FROM dual", nativeQuery = true)
-    Double calculateSimilarityScore(@Param("userId1") Long userId1, @Param("userId2") Long userId2);
-    // Optional<Utilizator> findByEmail(String email); // Exemplu de altă metodă utilă
-    // Boolean existsByNumeUtilizator(String numeUtilizator);
-    // Boolean existsByEmail(String email);
+    @Query(value = "SELECT FN_CALC_USER_SIMILARITY(:username1, :username2) FROM dual", nativeQuery = true)
+    Double calculateSimilarityScore(@Param("username1") String username1, @Param("username2") String username2);
 }
