@@ -1,11 +1,15 @@
 package com.arhiva_digitala.digital_archive_api.model;
 
+import com.arhiva_digitala.digital_archive_api.dto.EvenimentResponseDTO;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
+import java.util.HashSet;
+import java.util.Set;
 
 @Entity
 @Table(name = "EVENIMENTE")
@@ -21,7 +25,7 @@ public class Eveniment {
     private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "UTILIZATOR_ID", nullable = false)
+    @JoinColumn(name = "NUME_UTILIZATOR", referencedColumnName = "NUME_UTILIZATOR", nullable = false)
     private Utilizator utilizator;
 
     @Column(name = "TITLU", nullable = false, length = 200)
@@ -52,6 +56,10 @@ public class Eveniment {
     @Column(name = "DATA_ULTIMA_MODIFICARE")
     private LocalDateTime dataUltimaModificare;
 
+    @OneToMany(mappedBy = "eveniment", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+    @JsonIgnore
+    private Set<Participare> participanti = new HashSet<>();
+
     @PrePersist
     protected void onCreate() {
         LocalDateTime now = LocalDateTime.now();
@@ -66,4 +74,21 @@ public class Eveniment {
     protected void onUpdate() {
         dataUltimaModificare = LocalDateTime.now();
     }
+
+    public static EvenimentResponseDTO toDto(Eveniment event) {
+        return EvenimentResponseDTO.builder()
+                .id(event.getId())
+                .titlu(event.getTitlu())
+                .descriere(event.getDescriere())
+                .dataInceput(event.getDataInceput())
+                .dataSfarsit(event.getDataSfarsit())
+                .locatie(event.getLocatie())
+                .categorie(event.getCategorie())
+                .vizibilitate(event.getVizibilitate())
+                .dataCreare(event.getDataCreare())
+                .dataUltimaModificare(event.getDataUltimaModificare())
+                .numeUtilizator(event.getUtilizator().getNumeUtilizator())
+                .build();
+    }
+
 }

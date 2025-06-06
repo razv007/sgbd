@@ -1,52 +1,60 @@
-.container {
+.timelinePageContainer {
 	padding: 2rem;
 	max-width: 900px;
-	margin: 2rem auto;
-	background-color: #f9f9f9;
-	border-radius: 8px;
-	box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-
-	h1 {
-		text-align: center;
-		color: #333;
-		margin-bottom: 2rem;
-	}
+	margin: 0 auto;
+	display: flex;
+	flex-direction: column;
+	gap: 1.5rem;
+	background-color: #f9f9fc;
+	border-radius: 12px;
+	box-shadow: 0 0 10px rgba(0, 0, 0, 0.05);
+	min-height: 100vh;
 }
 
-.errorText {
-	color: #d9534f; /* Roșu pentru erori */
-	text-align: center;
-	margin-bottom: 1rem; /* Adăugat spațiu dedesubt */
-}
-
-.timelinePageContainer {
-	max-width: 1200px; /* Adjust as needed */
-	margin-left: auto;
-	margin-right: auto;
-	padding: 20px;
+.topBar {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	flex-wrap: wrap;
+	gap: 1rem;
 }
 
 .title {
-	text-align: center;
-	color: #333;
-	margin-bottom: 2rem;
+	font-size: 2rem;
+	font-weight: 600;
+	color: #2c3e50;
+	margin: 0;
+}
+
+.actionButton {
+	background-color: #2980b9;
+	color: white;
+	border: none;
+	padding: 0.6rem 1.2rem;
+	border-radius: 8px;
+	cursor: pointer;
+	font-size: 1rem;
+	transition: background-color 0.3s ease;
+}
+
+.actionButton:hover {
+	background-color: #1c5980;
 }
 
 .toggleFormButton {
-	display: block;
-	margin: 0 auto 20px auto; /* Center button and add space below */
-	padding: 10px 20px;
-	background-color: #007bff;
-	color: white;
-	border: none;
-	border-radius: 5px;
-	cursor: pointer;
-	font-size: 1em;
-	transition: background-color 0.3s ease;
+	@extend .actionButton;
+	background-color: #27ae60;
 
 	&:hover {
-		background-color: #0056b3;
+		background-color: #1f8b4c;
 	}
+}
+
+.infoText {
+	font-style: italic;
+	color: #666;
+	text-align: center;
+	margin-top: 1rem;
 }
 
 .formModal {
@@ -54,15 +62,13 @@
 	top: 50%;
 	left: 50%;
 	transform: translate(-50%, -50%);
-	background: white;
 	z-index: 1001;
+	background-color: white;
 	padding: 2rem;
 	border-radius: 10px;
-	box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
-	width: 90%;
+	box-shadow: 0 8px 30px rgba(0, 0, 0, 0.15);
 	max-width: 600px;
-	max-height: 90vh;
-	overflow-y: auto;
+	width: 90%;
 }
 
 .overlay {
@@ -71,6 +77,6 @@
 	left: 0;
 	width: 100vw;
 	height: 100vh;
-	background-color: rgba(0, 0, 0, 0.5); // dim background
+	background: rgba(0, 0, 0, 0.3);
 	z-index: 1000;
 }

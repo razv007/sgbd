@@ -51,6 +51,24 @@ public class EvenimentService {
         return saved;
     }
 
+    @Transactional(readOnly = true)
+    public List<Eveniment> getEvenimenteVizibilePentruUtilizator(String timelineOwnerUsername, String requesterUsername) {
+        Utilizator timelineOwner = utilizatorRepository.findByNumeUtilizator(timelineOwnerUsername)
+                .orElseThrow(() -> new UsernameNotFoundException("Utilizatorul nu a fost găsit: " + timelineOwnerUsername));
+
+        Utilizator requester = utilizatorRepository.findByNumeUtilizator(requesterUsername)
+                .orElseThrow(() -> new UsernameNotFoundException("Utilizatorul nu a fost găsit: " + requesterUsername));
+
+        List<Participare> participari = participareRepository.findByUtilizator(timelineOwner);
+        return participari.stream()
+                .map(Participare::getEveniment)
+                .filter(e -> e.getVizibilitate().equals("PUBLIC") ||
+                        e.getParticipanti().stream().anyMatch(p -> p.getUtilizator().equals(requester)))
+                .sorted((a, b) -> b.getDataInceput().compareTo(a.getDataInceput()))
+                .toList();
+    }
+
+
 
     @Transactional(readOnly = true)
     public List<Eveniment> getEvenimenteByUtilizator(String numeUtilizator) {

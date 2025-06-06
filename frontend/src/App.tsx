@@ -18,7 +18,7 @@ function App() {
 				<Route path="/signup" element={<SignupPage />} />
 				<Route path="/" element={<HomePage />} />{" "}
 				{/* Add HomePage route */}
-				<Route path="/timeline" element={<TimelinePage />} />{" "}
+				<Route path="/timeline/:username" element={<TimelinePage />} />
 				{/* Adaugă ruta pentru timeline */}
 				<Route path="*" element={<Navigate to="/" replace />} />{" "}
 				{/* Redirect any other path to HomePage (or login if not auth) */}

@@ -1,14 +1,16 @@
 export interface Eveniment {
-	id: number | string; // Permite string pentru ID-urile markerelor speciale
+	id: number | string;
 	titlu: string;
 	descriere?: string;
-	dataInceput: string; // String ISO (YYYY-MM-DD sau YYYY-MM-DDTHH:mm:ss)
-	dataSfarsit?: string; // String ISO
+	dataInceput: string;
+	dataSfarsit?: string;
 	locatie?: string;
 	categorie?: string;
 	vizibilitate?: string;
-	type?: "birth" | "today" | "event"; // Tipul item-ului pentru stilizare și logică diferită
+	numeUtilizator?: string; // 👈 add this
+	type?: "birth" | "today" | "event";
 }
+
 
 // Interfață pentru starea formularului
 export interface EvenimentFormData {

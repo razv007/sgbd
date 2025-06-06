@@ -1,6 +1,7 @@
 package com.arhiva_digitala.digital_archive_api.controller;
 
 import com.arhiva_digitala.digital_archive_api.dto.EvenimentRequestDto;
+import com.arhiva_digitala.digital_archive_api.dto.EvenimentResponseDTO;
 import com.arhiva_digitala.digital_archive_api.model.Eveniment;
 import com.arhiva_digitala.digital_archive_api.service.EvenimentService;
 import jakarta.validation.Valid;
@@ -56,6 +57,18 @@ public class EvenimentController {
         List<Eveniment> evenimente = evenimentService.getEvenimenteByUtilizator(username);
         return ResponseEntity.ok(evenimente);
     }
+
+    @GetMapping("/public/{username}")
+    public ResponseEntity<List<EvenimentResponseDTO>> getEvenimentePubliceSauVizibile(@PathVariable String username) {
+        String requester = getCurrentUsername();
+        List<Eveniment> evenimente = evenimentService.getEvenimenteVizibilePentruUtilizator(username, requester);
+        List<EvenimentResponseDTO> dtoList = evenimente.stream()
+                .map(Eveniment::toDto) // or use a separate mapper class
+                .toList();
+        return ResponseEntity.ok(dtoList);
+    }
+
+
 
     @GetMapping("/{id}")
     public ResponseEntity<Eveniment> getEvenimentById(@PathVariable Long id) {

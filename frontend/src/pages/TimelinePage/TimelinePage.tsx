@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import axios from "axios";
 import EventForm from "../../components/EventForm/EventForm";
 import TimelineContainer from "../../components/TimelineContainer/TimelineContainer";
@@ -7,6 +7,8 @@ import { type Eveniment } from "../../types/eveniment";
 import styles from "./TimelinePage.module.scss";
 
 const TimelinePage: React.FC = () => {
+	const { username } = useParams<{ username: string }>();
+
 	const [evenimente, setEvenimente] = useState<Eveniment[]>([]);
 	const [loading, setLoading] = useState<boolean>(true);
 	const [error, setError] = useState<string | null>(null);
@@ -28,7 +30,7 @@ const TimelinePage: React.FC = () => {
 			setLoading(true);
 			setError(null);
 			const response = await axios.get(
-				"http://localhost:8081/api/evenimente",
+				`http://localhost:8081/api/evenimente/public/${username}`,
 				{
 					headers: {
 						Authorization: `Bearer ${token}`,
@@ -36,6 +38,7 @@ const TimelinePage: React.FC = () => {
 					},
 				}
 			);
+
 			const data: Eveniment[] = response.data;
 			setEvenimente(data.map((ev) => ({ ...ev, type: "event" })));
 		} catch (err) {
@@ -106,7 +109,15 @@ const TimelinePage: React.FC = () => {
 
 	return (
 		<div className={styles.timelinePageContainer}>
-			<h1 className={styles.title}>Timeline Personal</h1>
+			<div className={styles.topBar}>
+				<h1 className={styles.title}>Timeline Personal</h1>
+				<button
+					onClick={() => navigate("/")}
+					className={styles.actionButton}
+				>
+					Înapoi la Acasă
+				</button>
+			</div>
 
 			<button
 				onClick={() => setShowForm(!showForm)}
@@ -137,6 +148,11 @@ const TimelinePage: React.FC = () => {
 				currentDateISO={currentDateISO}
 				loading={loading}
 			/>
+
+			<p className={styles.infoText}>
+				Evenimentele private sunt afișate doar dacă ai participat la
+				ele.
+			</p>
 		</div>
 	);
 };
